@@ -1,31 +1,25 @@
 package binarytree;
 
-public class BinaryTreeNode<E> {
-	private BinaryTreeNode<E> left, right, parent;
-	private int depth;
+public class Node<E> {
+	private Node<E> left, right, parent;
+	private int depth, height;
 	private E item;
 
-	public BinaryTreeNode(E item) {
+	public Node(E item) {
 		this.item = item;
 		this.depth = 0;
-	}
-
-	public BinaryTreeNode(E item, BinaryTreeNode<E> parent) {
-		this.item = item;
-		this.setParent(parent);
+		this.height = 0;
 	}
 
 	public boolean isLeaf() {
-		if (this.left == null && this.right == null)
-			return true;
-		return false;
+		return this.left == null && this.right == null;
 	}
 
 	public String toString() {
 		return this.item.toString();
 	}
 
-	public void setLeft(BinaryTreeNode<E> left) {
+	public void setLeft(Node<E> left) {
 		if (left == null)
 			this.left = null;
 		else {
@@ -35,7 +29,7 @@ public class BinaryTreeNode<E> {
 		}
 	}
 
-	public void setRight(BinaryTreeNode<E> right) {
+	public void setRight(Node<E> right) {
 		if (right == null)
 			this.right = null;
 		else {
@@ -53,24 +47,45 @@ public class BinaryTreeNode<E> {
 		this.item = item;
 	}
 
-	public BinaryTreeNode<E> getLeft() {
+	public Node<E> getLeft() {
 		return this.left;
 	}
 
-	public BinaryTreeNode<E> getRight() {
+	public Node<E> getRight() {
 		return this.right;
 	}
 
-	public BinaryTreeNode<E> getParent() {
+	public Node<E> getParent() {
 		return this.parent;
 	}
 
-	public void setParent(BinaryTreeNode<E> parent) {
+	public void setParent(Node<E> parent) {
 		this.parent = parent;
 	}
 
 	public int getDepth() {
 		return this.depth;
+	}
+
+	public int getHeight() {
+		return this.height;
+	}
+
+	public int getHeightBias() {
+		if (this.isLeaf())
+			return 0;
+		if (this.right == null)
+			return (1 + this.left.getHeight()) * -1;
+		if (this.left == null)
+			return 1 + this.right.getHeight();
+		return this.right.getHeight() - this.left.getHeight();
+	}
+
+	public void updateHeight() {
+		this.height = Math.max(this.left != null ? this.left.getHeight() + 1 : 0,
+				this.right != null ? this.right.getHeight() + 1 : 0);
+		if (this.parent != null)
+			this.parent.updateHeight();
 	}
 
 	public void setDepth(int depth) {
