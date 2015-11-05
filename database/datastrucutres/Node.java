@@ -1,4 +1,4 @@
-package binarytree;
+package database.datastrucutres;
 
 public class Node<E> {
 	private Node<E> left, right, parent;
@@ -47,11 +47,11 @@ public class Node<E> {
 		this.item = item;
 	}
 
-	public Node<E> getLeft() {
+	public Node<E> getLeftChild() {
 		return this.left;
 	}
 
-	public Node<E> getRight() {
+	public Node<E> getRightChild() {
 		return this.right;
 	}
 
@@ -87,7 +87,7 @@ public class Node<E> {
 		if (this.parent != null)
 			this.parent.updateHeight();
 	}
-
+	
 	public void setDepth(int depth) {
 		this.depth = depth;
 		if (this.left != null)

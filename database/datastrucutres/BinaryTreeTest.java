@@ -1,4 +1,4 @@
-package binarytree;
+package database.datastrucutres;
 
 public class BinaryTreeTest {
 
