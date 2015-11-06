@@ -9,12 +9,12 @@ import database.datastrucutres.BinaryTree;
 
 public class Parser {
 
-	public static BinaryTree<FoodPacket> parse(String fileName)
+	public static FoodBinaryTree parse(String fileName, String[] headers)
 			throws IOException {
 		File file = new File(fileName);
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
-		BinaryTree<FoodPacket> tree = new BinaryTree<FoodPacket>();
+		FoodBinaryTree tree = new FoodBinaryTree();
 		int noOfItems = 0;
 		for (int i = 0; i < line.length(); i++) {
 			if (line.charAt(i) == '^')
@@ -22,30 +22,32 @@ public class Parser {
 		}
 		noOfItems++;
 		while (line != null) {
-			tree.add(new FoodPacket(split(line, noOfItems)));
+			String[] values = split(line, noOfItems);
+			tree.add(new FoodPacket(values, headers));
+			line = in.readLine();
 		}
 		in.close();
 		return tree;
 	}
 
 	private static String[] split(String line, int items) {
-		line = "^"+line;
 		String[] data = new String[items];
 		int index = 0;
-		for (int i = 0; i < line.length(); i++) {
-			if (line.charAt(i) == '^') {
-				int temp = i+1;
-				while (temp < line.length() && line.charAt(temp) != '^') {
-					temp++;
-				}
-				data[index] = line.substring(i + 1, temp);
-				if (data[index].equals("~~"))
-					data[index] = "";
+		for (char i : line.toCharArray()) {
+			if (i == '^') {
+				if (data[index] != null && data[index].charAt(0) == '~')
+					data[index] = data[index].substring(1, data[index].length()-1);
 				index++;
-				i = temp + 1;
+			} else {
+				if (data[index] == null)
+					data[index] = i + "";
+				else
+					data[index] += i;
 			}
 		}
-		return data;
+		if(data[index] == null)
+			data[index] = "";
 
+		return data;
 	}
 }
