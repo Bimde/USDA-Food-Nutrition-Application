@@ -2,24 +2,27 @@ package database;
 
 public class Head implements Comparable<Head>{
 
-	private String name;
-	private int key;
+	private String value, header;
 
-	public Head(String name, int key) {
-		this.name = name;
-		this.key = key;
-	}
-
-	public int getKey() {
-		return this.key;
+	public Head(String header, String value) {
+		this.value = value;
+		this.header = header;
 	}
 	
-	public String getName () {
-		return this.name;
+	public String getValue () {
+		return this.value;
+	}
+	
+	public String getHeader() {
+		return this.header;
 	}
 
 	@Override
 	public int compareTo(Head other) {
-		return this.name.compareTo(other.getName());
+		if(this.header == null)
+			return 1;
+		else if (other.getHeader() == null)
+			return -1;
+		return this.header.compareTo(other.getHeader());
 	}
 }

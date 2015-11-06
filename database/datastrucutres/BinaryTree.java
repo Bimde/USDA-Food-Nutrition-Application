@@ -41,6 +41,12 @@ public class BinaryTree<E extends Comparable<E>> {
 		return this.internalMinDepth(this.head);
 	}
 
+	//TODO Optimize remove (make sure height updating works properly)
+	/**
+	 * OPTIMIZE
+	 * @param item
+	 * @return
+	 */
 	public boolean remove(E item) {
 		Node<E> node = getNode(item);
 		if (node == null)
