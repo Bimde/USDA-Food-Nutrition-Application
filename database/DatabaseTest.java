@@ -2,19 +2,15 @@ package database;
 
 import java.io.IOException;
 
+import database.datastrucutres.BinaryTree;
+
 public class DatabaseTest {
 
 	public static void main(String[] args) throws IOException {
-		long time = System.currentTimeMillis();
-		FoodBinaryTree<FoodPacket> binary = Parser.parse("FOOD_DES.txt", FoodPacket.FOOD_DES);
+		FoodBinaryTree binary = Parser.parse("NUT_DATA.txt", FoodPacket.NUT_DATA);
 		binary.print();
-		binary = Parser.parseNutrients(binary, "NUT_DATA.txt");
-//		NutrientPacket test = binary.get(2001).getNutrientPacket();
-//		System.out.println("2001" + ": " + test.getNutrients().get(203).getValue("Nutr_Val"));
-//		System.out.println(System.currentTimeMillis() - time);	
-		FoodBinaryTree<FoodPacket> binary2 = Parser.parse("NUTR_DEF.txt", FoodPacket.NUTR_DEF);
-//		System.out.println(binary2.get(203).getValue("NutrDesc"));
-		System.out.println(System.currentTimeMillis() - time);	
+		FoodPacket test = binary.get(2001);
+		System.out.println(test.getKey()+": "+test.getValue("NutrDesc"));
 	}
 
 }

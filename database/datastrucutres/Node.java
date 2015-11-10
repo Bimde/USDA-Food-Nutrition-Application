@@ -70,11 +70,6 @@ public class Node<E> {
 	public int getHeight() {
 		return this.height;
 	}
-	
-	public void fixHeight() {
-		this.height = Math.max(this.left != null ? this.left.getHeight() + 1 : 0,
-				this.right != null ? this.right.getHeight() + 1 : 0);
-	}
 
 	public int getHeightBias() {
 		if (this.isLeaf())

@@ -10,14 +10,10 @@ public class BinaryTree<E extends Comparable<E>> {
 		Node<E> itemNode = new Node<E>(item);
 		if (head == null)
 			this.head = itemNode;
-		else
-			this.internalAdd(itemNode, this.head);
-	}
-
-	public E getHead() {
-		if (this.head == null)
-			return null;
-		return this.head.getItem();
+		else if (this.internalAdd(itemNode, this.head)) {
+			this.updateHeights(this.head);
+			this.findProblems(this.head);
+		}
 	}
 
 	public E get(E item) {
@@ -45,10 +41,9 @@ public class BinaryTree<E extends Comparable<E>> {
 		return this.internalMinDepth(this.head);
 	}
 
-	// TODO Optimize remove (make sure height updating works properly)
+	//TODO Optimize remove (make sure height updating works properly)
 	/**
 	 * OPTIMIZE
-	 * 
 	 * @param item
 	 * @return
 	 */
@@ -119,7 +114,8 @@ public class BinaryTree<E extends Comparable<E>> {
 	protected int internalMinDepth(Node<E> node) {
 		if (node.getLeftChild() == null || node.getRightChild() == null)
 			return node.getDepth();
-		return Math.min(internalMinDepth(node.getLeftChild()), internalMinDepth(node.getRightChild()));
+		return Math.min(internalMinDepth(node.getLeftChild()),
+				internalMinDepth(node.getRightChild()));
 	}
 
 	protected void removeHead() {
@@ -141,22 +137,27 @@ public class BinaryTree<E extends Comparable<E>> {
 
 	protected boolean internalAdd(Node<E> node, Node<E> tempHead) {
 		int dif = node.getItem().compareTo(tempHead.getItem());
-		if (dif < 0) {
-			if (tempHead.getLeftChild() == null) {
+		if (tempHead.isLeaf()) {
+			if (dif < 0)
 				tempHead.setLeft(node);
-				node.updateHeight();
-			} else
-				this.internalAdd(node, tempHead.getLeftChild());
-		} else if (dif > 0) {
-			if (tempHead.getRightChild() == null) {
+			else if (dif > 0)
 				tempHead.setRight(node);
-				node.updateHeight();
-			} else
-				this.internalAdd(node, tempHead.getRightChild());
+			else
+				return false;
 		} else {
-			return false;
+			if (dif < 0) {
+				if (tempHead.getLeftChild() == null)
+					tempHead.setLeft(node);
+				else
+					this.internalAdd(node, tempHead.getLeftChild());
+			} else if (dif > 0) {
+				if (tempHead.getRightChild() == null)
+					tempHead.setRight(node);
+				else
+					this.internalAdd(node, tempHead.getRightChild());
+			} else
+				return false;
 		}
-		this.findProblems(tempHead);
 		return true;
 	}
 
@@ -180,18 +181,23 @@ public class BinaryTree<E extends Comparable<E>> {
 	protected void internalPrint(Node<E> tempHead) {
 		if (tempHead.getLeftChild() == null) {
 			if (tempHead.getRightChild() == null) {
-				System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "]");
+				System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
+						+ tempHead.getHeight() + "]");
 			} else {
-				System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] R-> ");
+				System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
+						+ tempHead.getHeight() + "] R-> ");
 				this.internalPrint(tempHead.getRightChild());
 			}
 		} else if (tempHead.getRightChild() == null) {
-			System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] L-> ");
+			System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
+					+ tempHead.getHeight() + "] L-> ");
 			this.internalPrint(tempHead.getLeftChild());
 		} else {
-			System.out.println(tempHead + "[branch](" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] L-> ");
+			System.out.println(tempHead + "[branch](" + tempHead.getDepth()
+					+ ")[" + tempHead.getHeight() + "] L-> ");
 			this.internalPrint(tempHead.getLeftChild());
-			System.out.println(tempHead + "[branch](" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] R-> ");
+			System.out.println(tempHead + "[branch](" + tempHead.getDepth()
+					+ ")[" + tempHead.getHeight() + "] R-> ");
 			this.internalPrint(tempHead.getRightChild());
 		}
 	}
@@ -203,18 +209,17 @@ public class BinaryTree<E extends Comparable<E>> {
 	}
 
 	protected void findProblems(Node<E> node) {
-		// if (node == null)
-		// return;
-		// this.findProblems(node.getLeftChild());
-		// this.findProblems(node.getRightChild());
+		if (node == null)
+			return;
+		findProblems(node.getLeftChild());
+		findProblems(node.getRightChild());
 		if (Math.abs(node.getHeightBias()) > 1)
 			balance(node);
 	}
 
 	protected void balance(Node<E> root) {
 		// Left case
-		int rootHeightBias = root.getHeightBias();
-		if (rootHeightBias < 0) {
+		if (root.getHeightBias() < 0) {
 			Node<E> temp = root.getLeftChild();
 			int bias = temp.getHeightBias();
 			// Left-right case
@@ -223,11 +228,10 @@ public class BinaryTree<E extends Comparable<E>> {
 			// Left left case (not in else because this is required for
 			// left-right case as well)
 			this.rotateRight(root);
-			root.fixHeight();
 			temp.updateHeight();
 		}
 		// Right case
-		else if (rootHeightBias > 0){
+		else {
 			Node<E> temp = root.getRightChild();
 			int bias = temp.getHeightBias();
 			// Right-left case
@@ -236,7 +240,6 @@ public class BinaryTree<E extends Comparable<E>> {
 			// Right right case (not in else because this is required for
 			// right-left case as well)
 			this.rotateLeft(root);
-			root.fixHeight();
 			temp.updateHeight();
 		}
 	}
