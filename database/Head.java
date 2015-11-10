@@ -1,6 +1,6 @@
 package database;
 
-public class Head implements Comparable<Head>{
+public class Head implements Comparable<Head> {
 
 	private String value, header;
 
@@ -8,18 +8,22 @@ public class Head implements Comparable<Head>{
 		this.value = value;
 		this.header = header;
 	}
-	
-	public String getValue () {
+
+	public String getValue() {
 		return this.value;
 	}
 	
+	public void setValue(String value) {
+		this.value = value;
+	}
+
 	public String getHeader() {
 		return this.header;
 	}
 
 	@Override
 	public int compareTo(Head other) {
-		if(this.header == null)
+		if (this.header == null)
 			return 1;
 		else if (other.getHeader() == null)
 			return -1;
