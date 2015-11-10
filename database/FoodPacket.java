@@ -17,7 +17,7 @@ public class FoodPacket implements KeyCompare<FoodPacket> {
 
 	private BinaryTree<Head> values;
 	private int key;
-	private NutrientPacket nutrients;
+	private NutrientPacket nutrientPacket;
 
 	public FoodPacket(String[] data, String[] headers) {
 		this.addData(data, headers);
@@ -60,12 +60,12 @@ public class FoodPacket implements KeyCompare<FoodPacket> {
 		}
 	}
 
-	public void addNutrients(NutrientPacket nutrients) {
-		this.nutrients = nutrients;
+	public void addNutrientPacket(NutrientPacket nutrients) {
+		this.nutrientPacket = nutrients;
 	}
 	
-	public NutrientPacket getNutrients() {
-		return this.nutrients;
+	public NutrientPacket getNutrientPacket() {
+		return this.nutrientPacket;
 	}
 
 	private void setKey(int key) {

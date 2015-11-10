@@ -2,30 +2,12 @@ package database;
 
 import database.datastrucutres.BinaryTree;
 
-public class NutrientPacket implements KeyCompare<NutrientPacket> {
+public class NutrientPacket{
 
 	private FoodBinaryTree<Nutrient> nutrients;
-	private int key;
 
-	public NutrientPacket(FoodBinaryTree<Nutrient> nutrients, int foodNo) {
+	public NutrientPacket(FoodBinaryTree<Nutrient> nutrients) {
 		this.nutrients = nutrients;
-		this.key = foodNo;
-		System.out.println(this.key);
-	}
-
-	@Override
-	public int compareTo(NutrientPacket packet) {
-		return packet.getKey() - this.getKey();
-	}
-
-	@Override
-	public int compareTo(int key) {
-		return key - this.getKey();
-	}
-
-	@Override
-	public int getKey() {
-		return this.key;
 	}
 	
 	public FoodBinaryTree<Nutrient> getNutrients() {

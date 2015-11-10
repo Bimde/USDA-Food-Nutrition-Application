@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import database.datastrucutres.BinaryTree;
-
 public class Parser {
 
 	public static FoodBinaryTree<FoodPacket> parse(String fileName, int type) throws IOException {
@@ -24,24 +22,24 @@ public class Parser {
 		return tree;
 	}
 
-	public static FoodBinaryTree<NutrientPacket> parseNutrients(String fileName) throws IOException {
+	public static FoodBinaryTree<FoodPacket> parseNutrients(FoodBinaryTree<FoodPacket> main, String fileName)
+			throws IOException {
 		File file = new File(fileName);
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
-		FoodBinaryTree<NutrientPacket> tree = new FoodBinaryTree<NutrientPacket>();
 		while (line != null) {
 			String[] values = split(line, FoodPacket.HEADERS[FoodPacket.NUT_DATA].length);
 			String key = values[0];
 			FoodBinaryTree<Nutrient> nutrients = new FoodBinaryTree<Nutrient>();
-			while (line != null && values[0] == key) {
+			while (line != null && values[0].equals(key)) {
 				nutrients.add(new Nutrient(values));
 				line = in.readLine();
 				values = split(line, FoodPacket.HEADERS[FoodPacket.NUT_DATA].length);
 			}
-			tree.add(new NutrientPacket(nutrients, Integer.parseInt(key)));
+			main.get(Integer.parseInt(key)).addNutrientPacket(new NutrientPacket(nutrients));
 		}
 		in.close();
-		return tree;
+		return main;
 	}
 
 	// public static FoodBinaryTree parseNutData(String[] headers, File file)
@@ -80,7 +78,7 @@ public class Parser {
 	}
 
 	private static String[] split(String line, int items) {
-		if(line == null)
+		if (line == null)
 			return null;
 		String[] data = new String[items];
 		int index = 0, length = line.length(), lastCarrot = 0;
