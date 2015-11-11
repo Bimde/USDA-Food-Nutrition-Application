@@ -28,7 +28,6 @@ public class BinaryTreeTest {
 		tree.add(new Integer(10));
 		tree.print();
 		System.out.println("\n----------------------------------------\n");
-		tree.remove(new Integer(5));
 		tree.print();
 		System.out.println("\n----------------------------------------\n");
 	}

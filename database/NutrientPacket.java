@@ -1,16 +1,14 @@
 package database;
 
-import database.datastrucutres.BinaryTree;
+public class NutrientPacket {
 
-public class NutrientPacket{
+	private NutrientList nutrients;
 
-	private FoodBinaryTree<Nutrient> nutrients;
-
-	public NutrientPacket(FoodBinaryTree<Nutrient> nutrients) {
+	public NutrientPacket(NutrientList nutrients) {
 		this.nutrients = nutrients;
 	}
-	
-	public FoodBinaryTree<Nutrient> getNutrients() {
+
+	public NutrientList getNutrients() {
 		return this.nutrients;
 	}
 }

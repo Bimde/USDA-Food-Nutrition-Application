@@ -1,36 +1,31 @@
 package database;
 
-import database.datastrucutres.BinaryTree;
-
 public class Nutrient implements KeyCompare<Nutrient> {
 
-	BinaryTree<Head> nutrients;
+	private String[] data;
 	private int key;
 
 	public Nutrient(String[] nutrients) {
-		this.addNutrients(nutrients);
+		this.data = nutrients;
+		this.key = Integer.parseInt(this.data[0]);
 	}
 
-	private void addNutrients(String[] nutrients) {
-		this.key = Integer.parseInt(nutrients[1]);
-		this.nutrients = new BinaryTree<Head>();
-		for (int i = 1; i < nutrients.length; i++) {
-			this.nutrients.add(new Head(FoodPacket.HEADERS[FoodPacket.NUT_DATA][i], nutrients[i]));
-		}
-	}
-	
 	public String getValue(String header) {
-		return this.nutrients.get(new Head(header, "")).getValue();
+		for (int i = 0; i < data.length; i++) {
+			if (FoodPacket.HEADERS[FoodPacket.NUT_DATA][i].equals(header))
+				return this.data[i];
+		}
+		return "";
 	}
 
 	@Override
 	public int compareTo(Nutrient other) {
 		return other.getKey() - this.key;
 	}
-	
+
 	@Override
 	public int compareTo(int key) {
-		return key-this.key;
+		return key - this.key;
 	}
 
 	public int getKey() {
