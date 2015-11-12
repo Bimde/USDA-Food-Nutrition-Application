@@ -1,12 +1,14 @@
 package database.datastrucutres;
 
 /**
- * Balnced binary tree implementation; modest loading times, but O(log(n)) searches
+ * Balnced binary tree implementation; modest loading times, but O(log(n))
+ * searches
+ * 
  * @author Bimesh De Silva
  * @version Final (November 2015)
  *
  */
-class BinaryTree<E extends Comparable<E>> {
+public class BinaryTree<E extends Comparable<E>> {
 	protected Node<E> head;
 
 	public BinaryTree() {
@@ -70,7 +72,8 @@ class BinaryTree<E extends Comparable<E>> {
 	protected int internalMinDepth(Node<E> node) {
 		if (node.getLeftChild() == null || node.getRightChild() == null)
 			return node.getDepth();
-		return Math.min(internalMinDepth(node.getLeftChild()), internalMinDepth(node.getRightChild()));
+		return Math.min(internalMinDepth(node.getLeftChild()),
+				internalMinDepth(node.getRightChild()));
 	}
 
 	protected void removeHead() {
@@ -131,18 +134,23 @@ class BinaryTree<E extends Comparable<E>> {
 	protected void internalPrint(Node<E> tempHead) {
 		if (tempHead.getLeftChild() == null) {
 			if (tempHead.getRightChild() == null) {
-				System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "]");
+				System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
+						+ tempHead.getHeight() + "]");
 			} else {
-				System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] R-> ");
+				System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
+						+ tempHead.getHeight() + "] R-> ");
 				this.internalPrint(tempHead.getRightChild());
 			}
 		} else if (tempHead.getRightChild() == null) {
-			System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] L-> ");
+			System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
+					+ tempHead.getHeight() + "] L-> ");
 			this.internalPrint(tempHead.getLeftChild());
 		} else {
-			System.out.println(tempHead + "[branch](" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] L-> ");
+			System.out.println(tempHead + "[branch](" + tempHead.getDepth()
+					+ ")[" + tempHead.getHeight() + "] L-> ");
 			this.internalPrint(tempHead.getLeftChild());
-			System.out.println(tempHead + "[branch](" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] R-> ");
+			System.out.println(tempHead + "[branch](" + tempHead.getDepth()
+					+ ")[" + tempHead.getHeight() + "] R-> ");
 			this.internalPrint(tempHead.getRightChild());
 		}
 	}

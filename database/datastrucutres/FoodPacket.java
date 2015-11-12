@@ -2,6 +2,7 @@ package database.datastrucutres;
 
 /**
  * Data packet containing one food item and all associated data references
+ * 
  * @author Bimesh De Silva
  * @version Final (November 2015)
  *
@@ -11,11 +12,13 @@ public class FoodPacket implements Comparable<FoodPacket> {
 	private BinaryTree<Head> values;
 	private int key;
 	private NutrientList nutrientList;
-	private String footNotes;
+	private LinkedList<String> footNotes, languals;
 
 	public FoodPacket(String[] data, String[] headers) {
 		this.addData(data, headers);
 		this.key = Integer.parseInt(data[0]);
+		this.footNotes = new LinkedList<String>();
+		this.languals = new LinkedList<String>();
 	}
 
 	@Override
@@ -61,18 +64,20 @@ public class FoodPacket implements Comparable<FoodPacket> {
 	public NutrientList getNutrients() {
 		return this.nutrientList;
 	}
-	
+
 	public void addFootNote(String note) {
-		if(this.footNotes == null)
-			this.footNotes = note;
-		else
-			this.footNotes += "\n"+note;
+		this.footNotes.add(note);
 	}
-	
-	public String getFootNotes()
-	{
-		if(this.footNotes == null)
-			return "";
-		return this.footNotes;
+
+	public String[] getFootNotes() {
+		return this.footNotes.toArray();
+	}
+
+	public void addLanguals(String data) {
+		this.languals.add(data);
+	}
+
+	public String[] getLanguals() {
+		return this.languals.toArray();
 	}
 }

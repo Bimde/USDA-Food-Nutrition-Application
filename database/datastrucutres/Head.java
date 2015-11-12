@@ -6,7 +6,7 @@ package database.datastrucutres;
  * @version Final (November 2015)
  *
  */
-class Head implements Comparable<Head> {
+public class Head implements Comparable<Head> {
 
 	private String value, header;
 

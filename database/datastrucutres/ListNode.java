@@ -10,14 +10,28 @@ package database.datastrucutres;
 public class ListNode<E> {
 	
 	private E item;
-	private ListNode<E> next;
+	private ListNode<E> next, previous;
+	int priority;
 
 	public ListNode(E value) {
 		this.item = value;
 	}
+	
+	public ListNode(E value, int priority) {
+		this.item = value;
+		this.priority = priority;
+	}
 
 	public ListNode<E> getNext() {
 		return this.next;
+	}
+	
+	public void setPrevious(ListNode<E> node){
+		this.previous = node;
+	}
+	
+	public ListNode<E> getPrevious() {
+		return this.previous;
 	}
 
 	public E getItem() {
@@ -31,5 +45,9 @@ public class ListNode<E> {
 	public String toString()
 	{
 		return this.item.toString();
+	}
+	
+	public int getPriority() {
+		return this.priority;
 	}
 }

@@ -1,5 +1,7 @@
 package database.datastrucutres;
 
+import java.util.Arrays;
+
 /**
  * Generic linked list to store data with fast load times and o(1)-O(n) read times
  * @author Bimesh De Silva
@@ -7,9 +9,9 @@ package database.datastrucutres;
  *
  * @param <E> Type of item for nodes to hold
  */
-class LinkedList<E> {
+public class LinkedList<E> {
 	protected ListNode<E> head, end;
-	private int size;
+	protected int size;
 
 	public LinkedList() {
 		this.size = 0;
@@ -21,6 +23,11 @@ class LinkedList<E> {
 
 	public int getSize() {
 		return this.size;
+	}
+	
+	public boolean isEmpty()
+	{
+		return this.size > 0;
 	}
 
 	public void add(E item) {
@@ -35,10 +42,26 @@ class LinkedList<E> {
 	}
 
 	public E[] toArray() {
-		E[] foods = (E[]) (new Object[this.size]);
+		if(this.size == 0)
+			return null;
+		if (this.head.getItem() instanceof String)
+			return (E[])toStringArray();
+		E[] foods = (E[]) new Object[this.size];
 		ListNode<E> temp = this.head;
 		for (int i = 0; i < foods.length; i++) {
 			foods[i] = temp.getItem();
+			temp = temp.getNext();
+		}
+		return foods;
+	}
+	
+	public String[] toStringArray() {
+		if(this.size == 0)
+			return null;
+		String[] foods = new String[this.size];
+		ListNode<E> temp = this.head;
+		for (int i = 0; i < foods.length; i++) {
+			foods[i] = (String)temp.getItem();
 			temp = temp.getNext();
 		}
 		return foods;
@@ -55,5 +78,15 @@ class LinkedList<E> {
 			System.out.println(temp.getItem());
 			temp = temp.getNext();
 		}
+	}
+	
+	public void add(ListNode<E> node) {
+		if (this.head == null)
+			this.head = node;
+		else {
+			this.end.setNext(node);
+		}
+		this.end = node;
+		this.size++;	
 	}
 }

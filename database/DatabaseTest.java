@@ -17,8 +17,13 @@ class DatabaseTest {
 		Database test = new Database();
 		Scanner in = new Scanner(System.in);
 		while (true) {
-			FoodPacketList list = test.search(in.nextLine());
+			FoodPacketList list = test.search(in.nextLine(), true);
 			list.print();
+			String[] languals = test.getLanguals(
+					list.getHead().getItem().getLanguals()).toArray();
+			if (languals != null)
+				for (String i : languals)
+					System.out.println(i);
 		}
 	}
 }
