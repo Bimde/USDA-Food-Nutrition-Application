@@ -1,6 +1,6 @@
 package database.datastrucutres;
 
-public class BinaryTree<E extends Comparable<E>> {
+class BinaryTree<E extends Comparable<E>> {
 	protected Node<E> head;
 
 	public BinaryTree() {
@@ -44,61 +44,6 @@ public class BinaryTree<E extends Comparable<E>> {
 	public int minDepth() {
 		return this.internalMinDepth(this.head);
 	}
-
-//	// TODO Optimize remove (make sure height updating works properly)
-//	/**
-//	 * OPTIMIZE
-//	 * 
-//	 * @param item
-//	 * @return
-//	 */
-//	public boolean remove(E item) {
-//		Node<E> node = getNode(item);
-//		if (node == null)
-//			return false;
-//		Node<E> parent = node.getParent();
-//		if (parent == null) {
-//			this.removeHead();
-//			return true;
-//		}
-//		if (node.isLeaf()) {
-//			if (parent.getLeftChild() == node) {
-//				parent.setLeft(null);
-//			} else {
-//				parent.setRight(null);
-//			}
-//		} else if (node.getLeftChild() == null) {
-//			if (parent.getLeftChild() == node) {
-//				parent.setLeft(node.getRightChild());
-//			} else {
-//				parent.setRight(node.getRightChild());
-//			}
-//		} else if (node.getRightChild() == null) {
-//			if (parent.getLeftChild() == node) {
-//				parent.setLeft(node.getLeftChild());
-//			} else {
-//				parent.setRight(node.getLeftChild());
-//			}
-//		} else {
-//			if (parent.getLeftChild() == node) {
-//				parent.setLeft(node.getRightChild());
-//				Node<E> temp = parent.getLeftChild();
-//				while (temp.getLeftChild() != null) {
-//					temp = temp.getLeftChild();
-//				}
-//				temp.setLeft(node.getLeftChild());
-//			} else {
-//				parent.setRight(node.getLeftChild());
-//				Node<E> temp = parent.getRightChild();
-//				while (temp.getRightChild() != null) {
-//					temp = temp.getRightChild();
-//				}
-//				temp.setRight(node.getRightChild());
-//			}
-//		}
-//		this.updateHeights(this.head);
-//		return true;
-//	}
 
 	protected int internalMaxDepth(Node<E> node) {
 		if (node == null)
@@ -227,7 +172,7 @@ public class BinaryTree<E extends Comparable<E>> {
 			temp.updateHeight();
 		}
 		// Right case
-		else if (rootHeightBias > 0){
+		else if (rootHeightBias > 0) {
 			Node<E> temp = root.getRightChild();
 			int bias = temp.getHeightBias();
 			// Right-left case

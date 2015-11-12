@@ -1,8 +1,12 @@
 package database;
 
+import database.datastrucutres.FoodBinaryTree;
+import database.datastrucutres.FoodPacket;
+import database.datastrucutres.LinkedList;
+
 public class Database {
 
-	private FoodBinaryTree<FoodPacket> main, foodGroups, nutrientDef;
+	private FoodBinaryTree main, foodGroups, nutrientDef;
 
 	// TODO SEARCH METHOD MUST RETURN A BINARYTREE OF RESULTS
 	// TODO BINARYTREE RETURNED MUST BE ABLE TO BE SEARCHED BY CATEGORY (ex. low
@@ -35,6 +39,15 @@ public class Database {
 			System.err.println("Error loading 'FD_GROUP.txt'");
 			e.printStackTrace();
 		}
-		System.out.println((System.currentTimeMillis() - time) / 1000.0);
+	}
+
+	/**
+	 * Finds all items in tree which contain specified query
+	 * RETURNS NULL IF NO ITEMS ARE FOUND
+	 * @param query	The string to search for
+	 * @return 		LinkedList of FoodPacket objects for all matches
+	 */
+	public LinkedList<FoodPacket> search(String query) {
+		return this.main.search(query);
 	}
 }

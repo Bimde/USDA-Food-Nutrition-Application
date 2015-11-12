@@ -3,15 +3,10 @@ package database.datastrucutres;
 public class ListNode<E> {
 	
 	private E item;
-	private ListNode<E> next, previous;
+	private ListNode<E> next;
 
 	public ListNode(E value) {
 		this.item = value;
-	}
-
-	public ListNode(E value, ListNode<E> previous) {
-		this.item = value;
-		this.previous = previous;
 	}
 
 	public ListNode<E> getNext() {
@@ -25,12 +20,9 @@ public class ListNode<E> {
 	public void setNext(ListNode<E> next) {
 		this.next = next;
 	}
-
-	public ListNode<E> getPrevious() {
-		return this.previous;
-	}
-
-	public void setPrevious(ListNode<E> previous) {
-		this.previous = previous;
+	
+	public String toString()
+	{
+		return this.item.toString();
 	}
 }

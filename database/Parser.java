@@ -5,14 +5,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Parser {
+import database.datastrucutres.FoodBinaryTree;
+import database.datastrucutres.FoodPacket;
+import database.datastrucutres.Nutrient;
+import database.datastrucutres.NutrientList;
 
-	public static FoodBinaryTree<FoodPacket> parse(String fileName, int type) throws IOException {
+class Parser {
+
+	public static FoodBinaryTree parse(String fileName, int type) throws IOException {
 		String[] headers = FoodPacket.HEADERS[type];
 		File file = new File(fileName);
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
-		FoodBinaryTree<FoodPacket> tree = new FoodBinaryTree<FoodPacket>();
+		FoodBinaryTree tree = new FoodBinaryTree();
 		while (line != null) {
 			String[] values = split(line, headers.length);
 			tree.add(new FoodPacket(values, headers));
@@ -22,8 +27,7 @@ public class Parser {
 		return tree;
 	}
 
-	public static FoodBinaryTree<FoodPacket> parseNutrients(FoodBinaryTree<FoodPacket> main, String fileName)
-			throws IOException {
+	public static FoodBinaryTree parseNutrients(FoodBinaryTree main, String fileName) throws IOException {
 		File file = new File(fileName);
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
@@ -36,7 +40,7 @@ public class Parser {
 				line = in.readLine();
 				values = split(line, FoodPacket.HEADERS[FoodPacket.NUT_DATA].length);
 			}
-			main.get(key).addNutrientPacket(new NutrientPacket(nutrients));
+			main.get(key).addNutrients(nutrients);
 		}
 		in.close();
 		return main;
