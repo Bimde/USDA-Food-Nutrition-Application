@@ -13,7 +13,7 @@ import database.datastrucutres.NutrientList;
 class Parser {
 
 	public static FoodBinaryTree parse(String fileName, int type) throws IOException {
-		String[] headers = FoodPacket.HEADERS[type];
+		String[] headers = FoodBinaryTree.HEADERS[type];
 		File file = new File(fileName);
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
@@ -32,13 +32,13 @@ class Parser {
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
 		while (line != null) {
-			String[] values = split(line, FoodPacket.HEADERS[FoodPacket.NUT_DATA].length);
+			String[] values = split(line, FoodBinaryTree.HEADERS[FoodBinaryTree.NUT_DATA].length);
 			int key = Integer.parseInt(values[0]);
 			NutrientList nutrients = new NutrientList();
 			while (line != null && Integer.parseInt(values[0]) == key) {
 				nutrients.add(new Nutrient(values));
 				line = in.readLine();
-				values = split(line, FoodPacket.HEADERS[FoodPacket.NUT_DATA].length);
+				values = split(line, FoodBinaryTree.HEADERS[FoodBinaryTree.NUT_DATA].length);
 			}
 			main.get(key).addNutrients(nutrients);
 		}

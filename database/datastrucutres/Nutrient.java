@@ -12,7 +12,7 @@ public class Nutrient{
 
 	public String getValue(String header) {
 		for (int i = 0; i < data.length; i++) {
-			if (FoodPacket.HEADERS[FoodPacket.NUT_DATA][i].equals(header))
+			if (FoodBinaryTree.HEADERS[FoodBinaryTree.NUT_DATA][i].equals(header))
 				return this.data[i];
 		}
 		return "";

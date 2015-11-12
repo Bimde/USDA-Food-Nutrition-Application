@@ -2,17 +2,6 @@ package database.datastrucutres;
 
 public class FoodPacket implements Comparable<FoodPacket> {
 
-	public static final String[][] HEADERS = {
-			{ "NDB_No", "FdGrp_Cd", "Long_Desc", "Short_Desc", "ComName", "ManufacName", "Survey", "Ref_desc", "Refuse",
-					"SciName", "N_Factor", "Pro_Factor", "Fat_Factor", "CHO_Factor" },
-			{ "NDB_No", "Nutr_No", "Nutr_Val", "Num_Data_Pts", "Std_Error", "Src_Cd", "Derriv_Cd", "Ref_NDB_No",
-					"Add_Nutr_Mark", "Num_Studies", "Min", "Max", "DF", "Low_EB", "Up_EB", "Stat_cmt", "AddMod_Date",
-					"CC" },
-			{ "NDB_No", "Seq", "Amount", "Msre_Desc", "Gm_Wgt", "Num_Data_Pts", "Std_Dev" },
-			{ "Nutr_No", "Units", "Tagname", "NutrDesc", "Num_Dec", "SR_Order" }, { "FdGrp_Cd", "FdGrp_Desc" } };
-
-	public static final int FOOD_DES = 0, NUT_DATA = 1, WEIGHT = 2, NUTR_DEF = 3, FD_GROUP = 4;
-
 	private BinaryTree<Head> values;
 	private int key;
 	private NutrientList nutrientList;
