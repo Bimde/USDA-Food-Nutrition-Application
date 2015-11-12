@@ -1,5 +1,11 @@
 package database.datastrucutres;
 
+/**
+ * Node for binary tree implementation
+ * @author Bimesh De Silva
+ * @version Final (November 2015)
+ *
+ */
 public class Node<E> {
 	private Node<E> left, right, parent;
 	private int depth, height;

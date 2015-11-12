@@ -5,19 +5,25 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import database.datastrucutres.FoodBinaryTree;
+import database.datastrucutres.FoodPacketBinaryTree;
 import database.datastrucutres.FoodPacket;
 import database.datastrucutres.Nutrient;
 import database.datastrucutres.NutrientList;
 
+/**
+ * Static class to parse files into appropriate data structure
+ * @author Bimesh De Silva
+ * @version Final (November 2015)
+ *
+ */
 class Parser {
 
-	public static FoodBinaryTree parse(String fileName, int type) throws IOException {
-		String[] headers = FoodBinaryTree.HEADERS[type];
+	public static FoodPacketBinaryTree parse(String fileName, int type) throws IOException {
+		String[] headers = FoodPacketBinaryTree.HEADERS[type];
 		File file = new File(fileName);
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
-		FoodBinaryTree tree = new FoodBinaryTree();
+		FoodPacketBinaryTree tree = new FoodPacketBinaryTree();
 		while (line != null) {
 			String[] values = split(line, headers.length);
 			tree.add(new FoodPacket(values, headers));
@@ -27,23 +33,40 @@ class Parser {
 		return tree;
 	}
 
-	public static FoodBinaryTree parseNutrients(FoodBinaryTree main, String fileName) throws IOException {
-		File file = new File(fileName);
+	public static void parseNutrients(FoodPacketBinaryTree main) throws IOException {
+		File file = new File("NUT_DATA.txt");
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
 		while (line != null) {
-			String[] values = split(line, FoodBinaryTree.HEADERS[FoodBinaryTree.NUT_DATA].length);
+			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA].length);
 			int key = Integer.parseInt(values[0]);
 			NutrientList nutrients = new NutrientList();
 			while (line != null && Integer.parseInt(values[0]) == key) {
 				nutrients.add(new Nutrient(values));
 				line = in.readLine();
-				values = split(line, FoodBinaryTree.HEADERS[FoodBinaryTree.NUT_DATA].length);
+				values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA].length);
 			}
 			main.get(key).addNutrients(nutrients);
 		}
 		in.close();
-		return main;
+	}
+	
+	public static void parseFootNotes(FoodPacketBinaryTree main) throws IOException {
+		File file = new File("NUT_DATA.txt");
+		BufferedReader in = new BufferedReader(new FileReader(file));
+		String line = in.readLine();
+		while (line != null) {
+			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA].length);
+			int key = Integer.parseInt(values[0]);
+			NutrientList nutrients = new NutrientList();
+			while (line != null && Integer.parseInt(values[0]) == key) {
+				nutrients.add(new Nutrient(values));
+				line = in.readLine();
+				values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA].length);
+			}
+			main.get(key).addNutrients(nutrients);
+		}
+		in.close();
 	}
 
 	private static String[] split(String line, int items) {

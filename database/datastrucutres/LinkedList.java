@@ -1,6 +1,13 @@
 package database.datastrucutres;
 
-public class LinkedList<E> {
+/**
+ * Generic linked list to store data with fast load times and o(1)-O(n) read times
+ * @author Bimesh De Silva
+ * @version Final (November 2015)
+ *
+ * @param <E> Type of item for nodes to hold
+ */
+class LinkedList<E> {
 	protected ListNode<E> head, end;
 	private int size;
 

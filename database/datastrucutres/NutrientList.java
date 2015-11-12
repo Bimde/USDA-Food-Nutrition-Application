@@ -1,8 +1,8 @@
 package database.datastrucutres;
 
 public class NutrientList extends LinkedList<Nutrient> {
-
 	public NutrientList() {
+		super();
 	}
 
 	public Nutrient get(int key) {
@@ -15,13 +15,21 @@ public class NutrientList extends LinkedList<Nutrient> {
 		return null;
 	}
 
-	public Nutrient get(String header) {
+	public Nutrient get(String key) {
 		ListNode<Nutrient> temp = this.head;
 		while (temp != null) {
-			if (temp.getItem().getValue("Nutr_No").equals(header))
+			if (temp.getItem().getValue("Nutr_No").equals(key))
 				return temp.getItem();
 			temp = temp.getNext();
 		}
 		return null;
+	}
+	
+	public boolean contains(int key){
+		return this.get(key) != null;
+	}
+	
+	public boolean contains(String key){
+		return this.get(key) != null;
 	}
 }

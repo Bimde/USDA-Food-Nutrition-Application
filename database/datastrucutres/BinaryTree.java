@@ -1,5 +1,11 @@
 package database.datastrucutres;
 
+/**
+ * Balnced binary tree implementation; modest loading times, but O(log(n)) searches
+ * @author Bimesh De Silva
+ * @version Final (November 2015)
+ *
+ */
 class BinaryTree<E extends Comparable<E>> {
 	protected Node<E> head;
 

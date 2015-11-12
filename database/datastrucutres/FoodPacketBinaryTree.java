@@ -1,7 +1,13 @@
 package database.datastrucutres;
 
-public class FoodBinaryTree extends BinaryTree<FoodPacket> {
-	
+/**
+ * Binary Tree containing only FoodPacket objects and FoodPacket-related methods 
+ * @author Bimesh De Silva
+ * @version Final (November 2015)
+ *
+ */
+public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
+
 	public static final String[][] HEADERS = {
 			{ "NDB_No", "FdGrp_Cd", "Long_Desc", "Short_Desc", "ComName", "ManufacName", "Survey", "Ref_desc", "Refuse",
 					"SciName", "N_Factor", "Pro_Factor", "Fat_Factor", "CHO_Factor" },
@@ -12,8 +18,8 @@ public class FoodBinaryTree extends BinaryTree<FoodPacket> {
 			{ "Nutr_No", "Units", "Tagname", "NutrDesc", "Num_Dec", "SR_Order" }, { "FdGrp_Cd", "FdGrp_Desc" } };
 
 	public static final int FOOD_DES = 0, NUT_DATA = 1, WEIGHT = 2, NUTR_DEF = 3, FD_GROUP = 4;
-	
-	public FoodBinaryTree() {
+
+	public FoodPacketBinaryTree() {
 		super();
 	}
 
@@ -34,21 +40,20 @@ public class FoodBinaryTree extends BinaryTree<FoodPacket> {
 		}
 	}
 
-	public LinkedList<FoodPacket> search(String query, String header) {
-		LinkedList<FoodPacket> list = new LinkedList<FoodPacket>();
-		if (this.internalSearch(this.head, query.toLowerCase(), header, list))
-			return list;
-		return null;
-	}
-	
-	public LinkedList<FoodPacket> search(String query, String[] headers) {
-		LinkedList<FoodPacket> list = new LinkedList<FoodPacket>();
-		if (this.internalSearch(this.head, query.toLowerCase(), headers, list))
-			return list;
-		return null;
+	public FoodPacketList search(String query, String header) {
+		FoodPacketList list = new FoodPacketList();
+		this.internalSearch(this.head, query.toLowerCase(), header, list);
+		return list;
 	}
 
-	private boolean internalSearch(Node<FoodPacket> node, String query, String header, LinkedList<FoodPacket> list) {
+	public FoodPacketList search(String query, String[] headers) {
+		FoodPacketList list = new FoodPacketList();
+		this.internalSearch(this.head, query.toLowerCase(), headers, list);
+		return list;
+
+	}
+
+	private boolean internalSearch(Node<FoodPacket> node, String query, String header, FoodPacketList list) {
 		if (node != null) {
 			FoodPacket food = node.getItem();
 			boolean found = false;
@@ -62,13 +67,12 @@ public class FoodBinaryTree extends BinaryTree<FoodPacket> {
 		}
 		return false;
 	}
-	
-	private boolean internalSearch(Node<FoodPacket> node, String query, String[] headers, LinkedList<FoodPacket> list) {
+
+	private boolean internalSearch(Node<FoodPacket> node, String query, String[] headers, FoodPacketList list) {
 		if (node != null) {
 			FoodPacket food = node.getItem();
 			boolean found = false, found1 = false;
-			for(int i = 0; !found && i < headers.length; i++)
-			{
+			for (int i = 0; !found && i < headers.length; i++) {
 				if (food.getValue(headers[i]).toLowerCase().contains(query)) {
 					list.add(food);
 					found = true;

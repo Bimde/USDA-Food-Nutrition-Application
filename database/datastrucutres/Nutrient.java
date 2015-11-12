@@ -1,6 +1,12 @@
 package database.datastrucutres;
 
-public class Nutrient{
+/**
+ * Data storage class to store nutrient information for individual foods in most efficient way
+ * @author Bimesh De Silva
+ * @version Final (November 2015)
+ *
+ */
+public class Nutrient {
 
 	private String[] data;
 	private int key;
@@ -12,7 +18,7 @@ public class Nutrient{
 
 	public String getValue(String header) {
 		for (int i = 0; i < data.length; i++) {
-			if (FoodBinaryTree.HEADERS[FoodBinaryTree.NUT_DATA][i].equals(header))
+			if (FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA][i].equals(header))
 				return this.data[i];
 		}
 		return "";

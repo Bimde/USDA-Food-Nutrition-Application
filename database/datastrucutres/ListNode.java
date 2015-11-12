@@ -1,5 +1,12 @@
 package database.datastrucutres;
 
+/**
+ * 'Bare-bones' node for a basic linked list implementation
+ * @author Bimesh De Silva
+ * @version Final (November 2015)
+ *
+ * @param <E> Type of item for node to hold
+ */
 public class ListNode<E> {
 	
 	private E item;
