@@ -9,16 +9,17 @@ package database.datastrucutres;
  */
 public class FoodPacket implements Comparable<FoodPacket> {
 
-	private BinaryTree<Head> values;
-	private int key;
+	private SearchableLinkedList values;
+	private int key, fileNo;
 	private NutrientList nutrientList;
 	private LinkedList<String> footNotes, languals;
 
-	public FoodPacket(String[] data, String[] headers) {
-		this.addData(data, headers);
+	public FoodPacket(String[] data, int fileNo) {
+		this.addData(data);
 		this.key = Integer.parseInt(data[0]);
 		this.footNotes = new LinkedList<String>();
 		this.languals = new LinkedList<String>();
+		this.fileNo = fileNo;
 	}
 
 	@Override
@@ -35,25 +36,21 @@ public class FoodPacket implements Comparable<FoodPacket> {
 	}
 
 	public String getValue(String header) {
-		return this.values.get(new Head(header, "")).getValue();
+		return this.values.get(header);
 	}
 
 	public boolean setValue(String header, String value) {
-		Head temp = this.values.get(new Head(header, ""));
-		if (temp == null)
-			return false;
-		temp.setValue(value);
-		return true;
+		return this.values.set(header, value);
 	}
 
 	public String toString() {
 		return this.key + "";
 	}
 
-	public void addData(String[] data, String[] headers) {
-		this.values = new BinaryTree<Head>();
-		for (int i = 0; i < headers.length; i++) {
-			this.values.add(new Head(headers[i], data[i]));
+	public void addData(String[] data) {
+		this.values = new SearchableLinkedList();
+		for (int i = 0; i < data.length; i++) {
+			this.values.add(new Head(i, data[i], this.fileNo));
 		}
 	}
 

@@ -8,6 +8,7 @@ import database.datastrucutres.BinaryTree;
 import database.datastrucutres.FoodPacket;
 import database.datastrucutres.FoodPacketBinaryTree;
 import database.datastrucutres.Head;
+import database.datastrucutres.KeyHead;
 import database.datastrucutres.Nutrient;
 import database.datastrucutres.NutrientList;
 
@@ -29,7 +30,7 @@ class Parser {
 		FoodPacketBinaryTree tree = new FoodPacketBinaryTree();
 		while (line != null) {
 			String[] values = split(line, headers.length);
-			tree.add(new FoodPacket(values, headers));
+			tree.add(new FoodPacket(values, type));
 			line = in.readLine();
 		}
 		in.close();
@@ -61,7 +62,7 @@ class Parser {
 
 	public static void parseFootNotes(FoodPacketBinaryTree main)
 			throws Exception {
-		File file = new File("NUT_DATA.txt");
+		File file = new File("FOOTNOTE.txt");
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
 		while (line != null) {
@@ -69,7 +70,7 @@ class Parser {
 					line,
 					FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.FOOTNOTE].length);
 			int key = Integer.parseInt(values[0]);
-			main.get(key).addFootNote(values[1]);
+			main.get(key).addFootNote(values[4]);
 			line = in.readLine();
 		}
 		in.close();
@@ -96,7 +97,7 @@ class Parser {
 			String[] values = split(
 					line,
 					FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.LANGDESC].length);
-			langualDescriptions.add(new Head(values[0], values[1]));
+			langualDescriptions.add(new KeyHead(values[0], values[1], FoodPacketBinaryTree.LANGDESC));
 			line = in.readLine();
 		}
 	}

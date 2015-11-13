@@ -22,21 +22,19 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 			ListNode<FoodPacket> searchNode = this.end;
 			while (searchNode.getPriority() > matches) {
 				searchNode = searchNode.getPrevious();
-				if(searchNode == null)
+				if (searchNode == null)
 					break;
 			}
 			if (searchNode == null) {
 				this.head.setPrevious(node);
 				node.setNext(this.head);
 				this.head = node;
-			}
-			else {
+			} else {
 				ListNode<FoodPacket> temp = searchNode.getNext();
 				if (temp == null) {
 					searchNode.setNext(node);
 					node.setPrevious(searchNode);
-				}
-				else {
+				} else {
 					searchNode.setNext(node);
 					node.setNext(temp);
 					node.setPrevious(searchNode);
@@ -68,12 +66,18 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 	}
 
 	public FoodPacketList search(String header, String value) {
+		return this.search(header, new String[] { value });
+	}
+
+	public FoodPacketList search(String header, String[] values) {
 		FoodPacketList list = new FoodPacketList();
 		ListNode<FoodPacket> temp = this.head;
-		while (temp != null) {
-			if (temp.getItem().getValue(header).equals(value))
-				list.add(temp.getItem());
-			temp = temp.getNext();
+		for (String value : values) {
+			while (temp != null) {
+				if (temp.getItem().getValue(header).equals(value))
+					list.add(temp.getItem());
+				temp = temp.getNext();
+			}
 		}
 		return list;
 	}
