@@ -1,12 +1,13 @@
 package database.datastrucutres;
 
 /**
- * Balnced binary tree implementation; modest loading times, but O(log(n))
+ * Balanced binary tree implementation; modest loading times, but O(log(n))
  * searches
  * 
  * @author Bimesh De Silva
  * @version Final (November 2015)
- *
+ * @param <E>
+ *            Object which extend Comparable class for Nodes to hold
  */
 public class BinaryTree<E extends Comparable<E>> {
 	protected Node<E> head;
@@ -14,6 +15,12 @@ public class BinaryTree<E extends Comparable<E>> {
 	public BinaryTree() {
 	}
 
+	/**
+	 * Adds the provided item to the BinaryTree
+	 * 
+	 * @param item
+	 *            The item to add
+	 */
 	public void add(E item) {
 		Node<E> itemNode = new Node<E>(item);
 		if (head == null)
@@ -22,12 +29,23 @@ public class BinaryTree<E extends Comparable<E>> {
 			this.internalAdd(itemNode, this.head);
 	}
 
+	/**
+	 * RETURNS NULL IF LIST IS EMPTY Returns the item contained in the head of
+	 * the tree
+	 * 
+	 * @return
+	 */
 	public E getHead() {
 		if (this.head == null)
 			return null;
 		return this.head.getItem();
 	}
 
+	/**
+	 * 
+	 * @param item
+	 * @return
+	 */
 	public E get(E item) {
 		Node<E> temp = this.getNode(item);
 		if (temp == null)
@@ -35,24 +53,51 @@ public class BinaryTree<E extends Comparable<E>> {
 		return temp.getItem();
 	}
 
+	/**
+	 * Print out the tree's contents using format: [branch] key[depth](height)
+	 * Direction --> for branches and key[depth](height) for leaves
+	 */
 	public void print() {
 		this.internalPrint(this.head);
 	}
 
+	/**
+	 * Checks whether the tree contains the specified item
+	 * 
+	 * @param item
+	 *            The item to find
+	 * @return whether the tree contains the specified item
+	 */
 	public boolean contains(E item) {
 		if (this.getNode(item) == null)
 			return false;
 		return true;
 	}
 
-	public int maxDepth() {
+	/**
+	 * Find the max depth of the tree (how many nodes down the tree goes)
+	 * 
+	 * @return the max depth of the tree
+	 */
+	protected int maxDepth() {
 		return this.internalMaxDepth(this.head);
 	}
 
-	public int minDepth() {
+	/**
+	 * Find the min depth of the tree (how many nodes deep is the most shallow
+	 * note without both a left and right child)
+	 * 
+	 * @return the min depth of the tree
+	 */
+	protected int minDepth() {
 		return this.internalMinDepth(this.head);
 	}
 
+	/**
+	 * Recursively find the maximum depth of the tree
+	 * @param node The node to find the deepest node from 
+	 * @return the maximum depth of the tree
+	 */
 	protected int internalMaxDepth(Node<E> node) {
 		if (node == null)
 			return -1;
@@ -69,6 +114,11 @@ public class BinaryTree<E extends Comparable<E>> {
 		}
 	}
 
+	/**
+	 * Recursively find the minimum depth of the tree
+	 * @param node The node to find the most shallow 
+	 * @return the maximum depth of the tree
+	 */
 	protected int internalMinDepth(Node<E> node) {
 		if (node.getLeftChild() == null || node.getRightChild() == null)
 			return node.getDepth();

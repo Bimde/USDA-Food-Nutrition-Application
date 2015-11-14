@@ -20,11 +20,12 @@ class DatabaseTest {
 			FoodPacketList list = test.search(in.nextLine());
 			list.print();
 			System.out.println("done");
-			// String[] temp = list.getHead().getItem().getLanguals();
-			// String[] languals = test.getLanguals(temp).toArray();
-			// if (languals != null)
-			// for (String i : languals)
-			// System.out.println(i);
+			String[] temp = list.getHead().getItem().getLanguals();
+			String[] languals = test.getLanguals(temp).toArray();
+			System.out.println(list.getSize());
+			if (languals != null)
+				for (String i : languals)
+					System.out.println(i);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package database.datastrucutres;
 
+import java.util.Arrays;
+
 /**
  * Binary Tree containing only FoodPacket objects and FoodPacket-related methods
  * 
@@ -22,9 +24,17 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 
 	public static final int FOOD_DES = 0, NUT_DATA = 1, WEIGHT = 2, NUTR_DEF = 3, FD_GROUP = 4, LANGDESC = 5,
 			LANGUAL = 6, FOOTNOTE = 7;
-//	0			1			2			3		4			5			6			7		8			9		10		11			12		13	
-//	CHO_Factor, ComName, Fat_Factor, FdGrp_Cd, Long_Desc, ManufacName, NDB_No, N_Factor, Pro_Factor, Ref_desc, Refuse, SciName, Short_Desc, Survey
-	
+
+	/**
+	 * Maximum number of words searched by from a user's query
+	 */
+	public static final int QUERY_CAP = 5;
+
+	// 0 1 2 3 4 5 6 7 8 9 10 11 12 13
+	// CHO_Factor, ComName, Fat_Factor, FdGrp_Cd, Long_Desc, ManufacName,
+	// NDB_No, N_Factor, Pro_Factor, Ref_desc, Refuse, SciName, Short_Desc,
+	// Survey
+
 	public FoodPacketBinaryTree() {
 		super();
 	}
@@ -48,6 +58,12 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 
 	public FoodPacketList search(String[] queries, String[] headers, boolean useLanguals) {
 		FoodPacketList list = new FoodPacketList();
+		
+		// Only look at first x words from the user's query, x being value inside 'QUERY_CAP'
+		if (queries.length > QUERY_CAP)
+			queries = Arrays.copyOfRange(queries, 0, 5);
+
+		// Call the recursive search method with the starting node (the head) and specified parameters
 		this.internalSearch(this.head, queries, headers, list, useLanguals);
 		return list;
 	}
@@ -58,8 +74,8 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 			FoodPacket food = node.getItem();
 			int matches = 0;
 			for (String query : queries) {
-				for (int i = 0; i < headers.length; i++) {
-					if (food.getValue(headers[i]).toLowerCase().contains(query)) {
+				for (String header : headers) {
+					if (food.getValue(header).toLowerCase().contains(query)) {
 						matches += 2;
 					}
 				}

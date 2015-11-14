@@ -24,12 +24,12 @@ public class NutrientList extends LinkedList<Nutrient> {
 		}
 		return null;
 	}
-	
-	public boolean contains(int key){
+
+	public boolean contains(int key) {
 		return this.get(key) != null;
 	}
-	
-	public boolean contains(String key){
+
+	public boolean contains(String key) {
 		return this.get(key) != null;
 	}
 }

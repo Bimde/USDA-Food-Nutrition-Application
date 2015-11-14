@@ -20,7 +20,7 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 			this.add(node);
 		else {
 			ListNode<FoodPacket> searchNode = this.end;
-			while (searchNode.getPriority() > matches) {
+			while (searchNode.getPriority() < matches) {
 				searchNode = searchNode.getPrevious();
 				if (searchNode == null)
 					break;
