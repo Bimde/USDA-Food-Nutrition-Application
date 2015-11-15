@@ -93,23 +93,11 @@ public class LinkedList<E> {
 
 		// Creates an array of type 'E' using casting technique
 		E[] foods = (E[]) new Object[this.size];
-		
-		// 
+
+		// Add the items to the array iteratively
 		ListNode<E> temp = this.head;
 		for (int i = 0; i < foods.length; i++) {
 			foods[i] = temp.getItem();
-			temp = temp.getNext();
-		}	
-		return foods;
-	}
-
-	public String[] toStringArray() {
-		if (this.size == 0)
-			return null;
-		String[] foods = new String[this.size];
-		ListNode<E> temp = this.head;
-		for (int i = 0; i < foods.length; i++) {
-			foods[i] = (String) temp.getItem();
 			temp = temp.getNext();
 		}
 		return foods;
@@ -120,6 +108,10 @@ public class LinkedList<E> {
 		this.size += list.getSize();
 	}
 
+	/**
+	 * FOR DEBUGGING PURPOSES: interatively prints out the values of all of the
+	 * items in the list, from head onwards
+	 */
 	public void print() {
 		ListNode<E> temp = this.head;
 		while (temp != null) {
@@ -128,6 +120,12 @@ public class LinkedList<E> {
 		}
 	}
 
+	/**
+	 * Adds a specified node to the end of the list
+	 * 
+	 * @param node
+	 *            Node to add
+	 */
 	public void add(ListNode<E> node) {
 		if (this.head == null)
 			this.head = node;
@@ -136,5 +134,22 @@ public class LinkedList<E> {
 		}
 		this.end = node;
 		this.size++;
+	}
+
+	/**
+	 * Special method to create array of objects if the objects are strings
+	 * 
+	 * @return arrays of string objects
+	 */
+	private String[] toStringArray() {
+		if (this.size == 0)
+			return null;
+		String[] foods = new String[this.size];
+		ListNode<E> temp = this.head;
+		for (int i = 0; i < foods.length; i++) {
+			foods[i] = (String) temp.getItem();
+			temp = temp.getNext();
+		}
+		return foods;
 	}
 }

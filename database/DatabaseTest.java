@@ -21,7 +21,6 @@ class DatabaseTest {
 			list.print();		
 			System.out.println("done");
 			if (list.getSize() != 0) {
-				System.out.println(list.getHead().getItem().getValue("Long_Desc"));
 				String[] temp = list.getHead().getItem().getLanguals();
 				String[] languals = test.getLanguals(temp).toArray();
 				System.out.println(list.getSize());

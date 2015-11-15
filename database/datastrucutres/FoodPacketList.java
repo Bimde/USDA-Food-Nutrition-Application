@@ -61,8 +61,8 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 					temp.setPrevious(node);
 				}
 			}
+			this.size++;
 		}
-		this.size++;
 	}
 
 	/**

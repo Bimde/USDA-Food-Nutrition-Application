@@ -109,7 +109,7 @@ public class Database {
 	 * @return LinkedList of FoodPacket objects for all matches
 	 */
 	public FoodPacketList search(String query) {
-		return this.main.search(query.toLowerCase().replaceAll("^[,\\s]+", "").split("[,\\s]+"),
+		return this.main.search(query.replaceAll("^[,\\s]+", "").split("[,\\s]+"),
 				new String[] { "Long_Desc", "Short_Desc", "ComName", "NDB_No" }, true);
 	}
 
