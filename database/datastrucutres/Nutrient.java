@@ -1,12 +1,14 @@
 package database.datastrucutres;
 
 /**
- * Data storage class to store nutrient information for individual foods in most efficient way
+ * Data storage class to store nutrient information for individual foods in most
+ * efficient way
+ * 
  * @author Bimesh De Silva
  * @version Final (November 2015)
  *
  */
-public class Nutrient {
+public class Nutrient implements Comparable<Nutrient> {
 
 	private String[] data;
 	private int key;
@@ -26,5 +28,10 @@ public class Nutrient {
 
 	public int getKey() {
 		return this.key;
+	}
+
+	@Override
+	public int compareTo(Nutrient other) {
+		return other.getKey() - this.key;
 	}
 }

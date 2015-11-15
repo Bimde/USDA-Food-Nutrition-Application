@@ -1,11 +1,14 @@
 package database;
 
+/**
+ * !!!!!!!!!!!!!!!!!!!!!!ASK MANGAT IF WE SHOULD PUT JD COMMENTS FOR CONSTRUCTORS!!!!!!!!!!!!!!!!
+ */
 import database.datastrucutres.BinaryTree;
 import database.datastrucutres.FoodPacket;
 import database.datastrucutres.FoodPacketBinaryTree;
 import database.datastrucutres.FoodPacketList;
-import database.datastrucutres.Head;
-import database.datastrucutres.KeyHead;
+import database.datastrucutres.LinkedSearchable;
+import database.datastrucutres.IndependantSearchable;
 import database.datastrucutres.LinkedList;
 
 /**
@@ -26,8 +29,8 @@ public class Database {
 	 * Generalized food group categories
 	 */
 	public static final String[][] groups = { { "0800", "2000" },
-			{ "0500", "0700", "1000", "1200", "1300", "1500", "1700" }, { "0900", "1100", "1600" }, { "0100", "0200" },
-			{ "0300", "0400", "0600", "1400", "1800", "1900", "2100", "2200", "2500", "3500", "3600" } };
+			{ "0500", "0700", "1000", "1200", "1300", "1500", "1700" }, { "0900", "1100", "1600" }, { "0100" },
+			{ "0200", "0300", "0400", "0600", "1400", "1800", "1900", "2100", "2200", "2500", "3500", "3600" } };
 
 	/**
 	 * Contains the information searchable by the user
@@ -37,7 +40,7 @@ public class Database {
 	/**
 	 * Contains langual information (used primarily for searching)
 	 */
-	private BinaryTree<Head> languals;
+	private BinaryTree<LinkedSearchable> languals;
 
 	/**
 	 * Initializes and loads data into all data structures
@@ -98,7 +101,8 @@ public class Database {
 	}
 
 	/**
-	 * Finds all items in tree which contain specified query
+	 * Finds all items in tree which contain specified query in the long
+	 * description, short description, common name or primary key
 	 * 
 	 * @param query
 	 *            The string to search for
@@ -110,7 +114,8 @@ public class Database {
 	}
 
 	/**
-	 * Finds all items in tree which contain specified query in the specified fields
+	 * Finds all items in tree which contain specified query in the specified
+	 * fields
 	 * 
 	 * @param query
 	 *            The string to search for
@@ -120,9 +125,8 @@ public class Database {
 	 *            Whether or not to search using langual information
 	 * @return LinkedList of FoodPacket objects for all matches
 	 */
-	public FoodPacketList search(String query, String[] headers, boolean useLanguals) {
-		return this.main.search(query.toLowerCase().replaceAll("^[,\\s]+", "").split("[,\\s]+"),
-				headers, useLanguals);
+	public FoodPacketList search(String[] queries, String[] headers, boolean useLanguals) {
+		return this.main.search(queries, headers, useLanguals);
 	}
 
 	/**
@@ -187,7 +191,7 @@ public class Database {
 		if (keys == null || this.languals == null)
 			return list;
 		for (String key : keys) {
-			list.add(this.languals.get(new KeyHead(key, FoodPacketBinaryTree.LANGUAL)).getValue());
+			list.add(this.languals.get(new IndependantSearchable(key)).getValue());
 		}
 		return list;
 	}
@@ -202,5 +206,17 @@ public class Database {
 	 */
 	public FoodPacket getFood(int key) {
 		return this.main.get(key);
+	}
+
+	/**
+	 * Allows user to add food item to the database (saves item in both
+	 * datastructures (memory) and permanant files (*.txt files)
+	 * 
+	 * @param description
+	 *            The important information to add, pertaining to the
+	 *            ADD_FOOD_SPECIFICATIONS public static array
+	 */
+	public void addFood(String[] descriptions) {
+
 	}
 }

@@ -1,35 +1,71 @@
 package database.datastrucutres;
 
-import java.util.Arrays;
-
 /**
- * Generic linked list to store data with fast load times and o(1)-O(n) read times
+ * Generic linked list to store data with fast load times and o(1)-O(n) read
+ * times
+ * 
  * @author Bimesh De Silva
  * @version Final (November 2015)
  *
- * @param <E> Type of item for nodes to hold
+ * @param <E>
+ *            Type of item for nodes to hold
  */
 public class LinkedList<E> {
-	protected ListNode<E> head, end;
+	/**
+	 * Reference to first node in list
+	 */
+	protected ListNode<E> head;
+
+	/**
+	 * Reference to last node in list
+	 */
+	protected ListNode<E> end;
+
+	/**
+	 * Number of nodes in list
+	 */
 	protected int size;
 
+	/**
+	 * Created a new Linked List of size 0
+	 */
 	public LinkedList() {
 		this.size = 0;
 	}
 
+	/**
+	 * Getter for first node in list
+	 * 
+	 * @return the first node in the list
+	 */
 	public ListNode<E> getHead() {
 		return this.head;
 	}
 
+	/**
+	 * Getter for size of the list
+	 * 
+	 * @return Number of nodes in the list
+	 */
 	public int getSize() {
 		return this.size;
 	}
-	
-	public boolean isEmpty()
-	{
-		return this.size > 0;
+
+	/**
+	 * Checks if the list is empty
+	 * 
+	 * @return Whether or not the list is empty
+	 */
+	public boolean isEmpty() {
+		return this.head == null;
 	}
 
+	/**
+	 * Adds a specified item to the list
+	 * 
+	 * @param item
+	 *            The item to add to the list
+	 */
 	public void add(E item) {
 		ListNode<E> add = new ListNode<E>(item);
 		if (this.head == null)
@@ -41,27 +77,39 @@ public class LinkedList<E> {
 		this.size++;
 	}
 
+	/**
+	 * Creates a new array of all of the objects
+	 * 
+	 * @return array of objects or NULL IF EMPTY
+	 */
 	public E[] toArray() {
-		if(this.size == 0)
+		if (this.isEmpty())
 			return null;
+
+		// Calls a special method to create the array for String because you
+		// cannot cast an Object array to a String array
 		if (this.head.getItem() instanceof String)
-			return (E[])toStringArray();
+			return (E[]) toStringArray();
+
+		// Creates an array of type 'E' using casting technique
 		E[] foods = (E[]) new Object[this.size];
+		
+		// 
 		ListNode<E> temp = this.head;
 		for (int i = 0; i < foods.length; i++) {
 			foods[i] = temp.getItem();
 			temp = temp.getNext();
-		}
+		}	
 		return foods;
 	}
-	
+
 	public String[] toStringArray() {
-		if(this.size == 0)
+		if (this.size == 0)
 			return null;
 		String[] foods = new String[this.size];
 		ListNode<E> temp = this.head;
 		for (int i = 0; i < foods.length; i++) {
-			foods[i] = (String)temp.getItem();
+			foods[i] = (String) temp.getItem();
 			temp = temp.getNext();
 		}
 		return foods;
@@ -79,7 +127,7 @@ public class LinkedList<E> {
 			temp = temp.getNext();
 		}
 	}
-	
+
 	public void add(ListNode<E> node) {
 		if (this.head == null)
 			this.head = node;
@@ -87,6 +135,6 @@ public class LinkedList<E> {
 			this.end.setNext(node);
 		}
 		this.end = node;
-		this.size++;	
+		this.size++;
 	}
 }

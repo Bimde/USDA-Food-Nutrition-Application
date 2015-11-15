@@ -11,6 +11,13 @@ import java.util.Arrays;
  */
 public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 
+	/**
+	 * The specified field headers from 'USDA National Nutrient Database for
+	 * Standard Reference, Release 27'. Get array of headers for any file using
+	 * the available public static variables, for example, for the file
+	 * 'FOOD_DES.txt' use
+	 * 'FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.FOOD_DES]'
+	 */
 	public static final String[][] HEADERS = {
 			{ "NDB_No", "FdGrp_Cd", "Long_Desc", "Short_Desc", "ComName", "ManufacName", "Survey", "Ref_desc", "Refuse",
 					"SciName", "N_Factor", "Pro_Factor", "Fat_Factor", "CHO_Factor" },
@@ -22,13 +29,26 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 			{ "Factor_Code", "Description" }, { "NDB_No", "Factor_Code" },
 			{ "NDB_No", "Footnt_No", "Footnt_Typ", "Nutr_No", "Footnt_Txt" } };
 
+	/**
+	 * Value representing specific files for accessing the HEADERS array
+	 * associated with the desired file
+	 */
 	public static final int FOOD_DES = 0, NUT_DATA = 1, WEIGHT = 2, NUTR_DEF = 3, FD_GROUP = 4, LANGDESC = 5,
 			LANGUAL = 6, FOOTNOTE = 7;
 
 	/**
 	 * Maximum number of words searched by from a user's query
 	 */
-	public static final int QUERY_CAP = 5;
+	private static final int QUERY_CAP = 5;
+
+	/**
+	 * Weight in searching algorithm of matches in food descriptions: If the
+	 * query is contained in the food description fields, it is more likely to
+	 * be what the user is searching for than if it is contained in the langual
+	 * descriptions,a s the food descriptions are more specific, so add 5 for
+	 * each match as opposed to only 1 point for each langual description match
+	 */
+	private static final int DESCRIPTIONS_WEIGHT = 5, LANGUAL_WEIGHT = 1;
 
 	// 0 1 2 3 4 5 6 7 8 9 10 11 12 13
 	// CHO_Factor, ComName, Fat_Factor, FdGrp_Cd, Long_Desc, ManufacName,
@@ -39,6 +59,14 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 		super();
 	}
 
+	/**
+	 * Finds the FoodPacket object associated with the specified key
+	 * 
+	 * @param key
+	 *            The primary key associated key the desired FoodPacket
+	 * @return The FoodPacket object associated with the specified key or NULL
+	 *         IF NOT FOUND
+	 */
 	public FoodPacket get(int key) {
 		Node<FoodPacket> temp = this.head;
 		while (true) {
@@ -56,47 +84,99 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 		}
 	}
 
+	/**
+	 * Search the tree using desired queries in the specified fields
+	 * 
+	 * @param queries
+	 *            The values to search for
+	 * @param headers
+	 *            The fields to search in
+	 * @param useLanguals
+	 *            Whether or not to search in associated langual files
+	 * @return LinkedList of FoodPacket objects satisfying the criteria
+	 */
 	public FoodPacketList search(String[] queries, String[] headers, boolean useLanguals) {
 		FoodPacketList list = new FoodPacketList();
-		
-		// Only look at first x words from the user's query, x being value inside 'QUERY_CAP'
+
+		// Only look at first x words from the user's query, x being value
+		// inside 'QUERY_CAP'
 		if (queries.length > QUERY_CAP)
 			queries = Arrays.copyOfRange(queries, 0, 5);
 
-		// Call the recursive search method with the starting node (the head) and specified parameters
+		// Call the recursive search method with the starting node (the head)
+		// and specified parameters
 		this.internalSearch(this.head, queries, headers, list, useLanguals);
 		return list;
 	}
 
-	private boolean internalSearch(Node<FoodPacket> node, String[] queries, String[] headers, FoodPacketList list,
+	/**
+	 * Recursively find and add FoodPacket objects satisfying the criteria to a
+	 * provided priority queue, feeding in the number of matches to use in the
+	 * priority queue
+	 * 
+	 * @param node
+	 *            node which contains FoodPacket object to search
+	 * @param queries
+	 *            Values to search for
+	 * @param headers
+	 *            Fields to search in
+	 * @param list
+	 *            Priority queue to add the results to
+	 * @param useLanguals
+	 *            Whether or not to search in associated langual files
+	 */
+	private void internalSearch(Node<FoodPacket> node, String[] queries, String[] headers, FoodPacketList list,
 			boolean useLanguals) {
 		if (node != null) {
+			// Search the FoodPacket object with each search term individually
+			// and add up the number of matches
 			FoodPacket food = node.getItem();
 			int matches = 0;
 			for (String query : queries) {
 				for (String header : headers) {
+					query = query.toLowerCase();
+
+					// If the FoodPacket object contains the query, increase the
+					// number of matches
 					if (food.getValue(header).toLowerCase().contains(query)) {
-						matches += 2;
+
+						matches += DESCRIPTIONS_WEIGHT;
 					}
 				}
+				// Only search langual information if specified
 				if (useLanguals)
-					matches += langualSearch(node, query, list);
+					matches += langualSearch(node, query);
 			}
+			// Add item to result priority queue if at least one match was found
 			if (matches > 0)
 				list.add(food, matches);
+
+			// Recursively search both children for matches
 			internalSearch(node.getLeftChild(), queries, headers, list, useLanguals);
 			internalSearch(node.getRightChild(), queries, headers, list, useLanguals);
 		}
-		return false;
 	}
 
-	private int langualSearch(Node<FoodPacket> node, String query, FoodPacketList list) {
+	/**
+	 * Specific method for searching through associated langual information
+	 * 
+	 * @param node
+	 *            Node to search in
+	 * @param query
+	 *            Value to search for
+	 * @return Number of matches found
+	 */
+	private int langualSearch(Node<FoodPacket> node, String query) {
+
+		// Get all associated langual information and loop through them
 		String[] langualData = node.getItem().getLanguals();
 		int matches = 0;
 		if (!(langualData == null || langualData.length <= 0)) {
 			for (int i = 0; i < langualData.length; i++) {
+				// Increase the number of matches by the langual weight every
+				// time a langual contains the specified query
 				if (langualData[i].toLowerCase().contains(query))
-					matches++;
+					matches += LANGUAL_WEIGHT;
 			}
 		}
 		return matches;

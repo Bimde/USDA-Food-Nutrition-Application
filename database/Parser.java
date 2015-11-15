@@ -7,8 +7,8 @@ import java.io.FileReader;
 import database.datastrucutres.BinaryTree;
 import database.datastrucutres.FoodPacket;
 import database.datastrucutres.FoodPacketBinaryTree;
-import database.datastrucutres.Head;
-import database.datastrucutres.KeyHead;
+import database.datastrucutres.IndependantSearchable;
+import database.datastrucutres.LinkedSearchable;
 import database.datastrucutres.Nutrient;
 import database.datastrucutres.NutrientList;
 
@@ -127,8 +127,10 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public static BinaryTree<Head> parseLanguals(FoodPacketBinaryTree main) throws Exception {
-		BinaryTree<Head> langualDescriptions = new BinaryTree<Head>();
+	public static BinaryTree<LinkedSearchable> parseLanguals(FoodPacketBinaryTree main) throws Exception {
+
+		// Load the primary keys (ex. A2001) into the FoodPacket objects in
+		// provided BinaryTree
 		File file = new File("LANGUAL.txt");
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
@@ -139,12 +141,17 @@ class Parser {
 			line = in.readLine();
 		}
 		in.close();
+
+		// Create a new BinaryTree to link the primary keys from the langual
+		// descriptions file to the langual descriptions (allows user to get
+		// langual descriptions by providing primary key)
+		BinaryTree<LinkedSearchable> langualDescriptions = new BinaryTree<LinkedSearchable>();
 		file = new File("LANGDESC.txt");
 		in = new BufferedReader(new FileReader(file));
 		line = in.readLine();
 		while (line != null) {
 			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.LANGDESC].length);
-			langualDescriptions.add(new KeyHead(values[0], values[1], FoodPacketBinaryTree.LANGDESC));
+			langualDescriptions.add(new IndependantSearchable(values[0], values[1]));
 			line = in.readLine();
 		}
 		return langualDescriptions;
@@ -169,7 +176,8 @@ class Parser {
 		int index = 0, length = line.length(), lastCarrot = 0;
 
 		// Loop through each line and add break information into array using i
-		// as the start of the string and j as the position of the found delimeter
+		// as the start of the string and j as the position of the found
+		// delimeter
 		for (int i = 0; i < length; i++) {
 			boolean done = false;
 			for (int j = i; !done && j < length; j++) {

@@ -7,7 +7,7 @@ package database.datastrucutres;
  * @author Bimesh De Silva
  * @version Final (November 2015)
  * @param <E>
- *            Object which extend Comparable class for Nodes to hold
+ *            Object which extends Comparable class for Nodes to hold
  */
 public class BinaryTree<E extends Comparable<E>> {
 	protected Node<E> head;
@@ -95,7 +95,9 @@ public class BinaryTree<E extends Comparable<E>> {
 
 	/**
 	 * Recursively find the maximum depth of the tree
-	 * @param node The node to find the deepest node from 
+	 * 
+	 * @param node
+	 *            The node to find the deepest node from
 	 * @return the maximum depth of the tree
 	 */
 	protected int internalMaxDepth(Node<E> node) {
@@ -116,56 +118,71 @@ public class BinaryTree<E extends Comparable<E>> {
 
 	/**
 	 * Recursively find the minimum depth of the tree
-	 * @param node The node to find the most shallow 
+	 * 
+	 * @param node
+	 *            The node to find the most shallow
 	 * @return the maximum depth of the tree
 	 */
 	protected int internalMinDepth(Node<E> node) {
 		if (node.getLeftChild() == null || node.getRightChild() == null)
 			return node.getDepth();
-		return Math.min(internalMinDepth(node.getLeftChild()),
-				internalMinDepth(node.getRightChild()));
+		return Math.min(internalMinDepth(node.getLeftChild()), internalMinDepth(node.getRightChild()));
 	}
 
-	protected void removeHead() {
-		if (this.head.isLeaf())
-			this.head = null;
-		else if (this.head.getLeftChild() == null) {
-			this.head = this.head.getRightChild();
-		} else if (this.head.getRightChild() == null) {
-			this.head = this.head.getLeftChild();
-		} else {
-			Node<E> temp = this.head.getRightChild();
-			while (temp.getLeftChild() != null) {
-				temp = temp.getLeftChild();
-			}
-			temp.setLeft(this.head.getLeftChild());
-			this.setHead(this.head.getRightChild());
-		}
-	}
-
+	/**
+	 * Recursively adds a node to the tree, then calls the balancing methods to
+	 * fix balancing problems from the root node
+	 * 
+	 * @param node
+	 *            The node to add to the tree
+	 * @param tempHead
+	 *            The node that is currently being searched
+	 * @return Wether or not the node was added (if the node has an item that
+	 *         already exists in the tree, it WILL NOT BE ADDED!!!
+	 */
 	protected boolean internalAdd(Node<E> node, Node<E> tempHead) {
+		// Get the value difference between the items in the current node and
+		// node trying to be added using the mandatory implemented Comparable
+		// interface
 		int dif = node.getItem().compareTo(tempHead.getItem());
+
+		// Look left if the difference is lower, look right if it is greater,
+		// and return false if the item already exists in the tree
+		boolean added = false;
 		if (dif < 0) {
 			if (tempHead.getLeftChild() == null) {
 				tempHead.setLeft(node);
 				node.updateHeight();
+				added = true;
 			} else
-				this.internalAdd(node, tempHead.getLeftChild());
+				added = this.internalAdd(node, tempHead.getLeftChild());
 		} else if (dif > 0) {
 			if (tempHead.getRightChild() == null) {
 				tempHead.setRight(node);
 				node.updateHeight();
+				added = true;
 			} else
-				this.internalAdd(node, tempHead.getRightChild());
-		} else {
-			return false;
+				added = this.internalAdd(node, tempHead.getRightChild());
 		}
+
+		// Find balancing problems and fix them
 		this.findProblems(tempHead);
-		return true;
+		return added;
 	}
 
+	/**
+	 * Finds the node containing the specified item
+	 * 
+	 * @param item
+	 *            The item which the desired node contains
+	 * @return If it exists, the node containing the specified item, NULL
+	 *         otherwise
+	 */
 	protected Node<E> getNode(E item) {
-		Node<E> temp = head;
+		Node<E> temp = this.head;
+
+		// Iteratively find the node using a binary search for better
+		// performance / lower memory usage
 		while (true) {
 			if (temp == null)
 				return null;
@@ -181,76 +198,136 @@ public class BinaryTree<E extends Comparable<E>> {
 		}
 	}
 
+	/**
+	 * FOR DEBUGGING PURPOSES: RECURSIVELY prints out the entire tree using the
+	 * format: For branches: 'Primary Key(depth)[height] Direction->' For non
+	 * branches: 'Primary Key(depth)[height]'
+	 * 
+	 * @param tempHead
+	 *            The node to print from
+	 */
 	protected void internalPrint(Node<E> tempHead) {
+		// Prints using the appropriate format based on children
 		if (tempHead.getLeftChild() == null) {
 			if (tempHead.getRightChild() == null) {
-				System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
-						+ tempHead.getHeight() + "]");
+				System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "]");
 			} else {
-				System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
-						+ tempHead.getHeight() + "] R-> ");
+				System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] R-> ");
 				this.internalPrint(tempHead.getRightChild());
 			}
 		} else if (tempHead.getRightChild() == null) {
-			System.out.println(tempHead + "(" + tempHead.getDepth() + ")["
-					+ tempHead.getHeight() + "] L-> ");
+			System.out.println(tempHead + "(" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] L-> ");
 			this.internalPrint(tempHead.getLeftChild());
 		} else {
-			System.out.println(tempHead + "[branch](" + tempHead.getDepth()
-					+ ")[" + tempHead.getHeight() + "] L-> ");
+			System.out.println(tempHead + "[branch](" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] L-> ");
 			this.internalPrint(tempHead.getLeftChild());
-			System.out.println(tempHead + "[branch](" + tempHead.getDepth()
-					+ ")[" + tempHead.getHeight() + "] R-> ");
+			System.out.println(tempHead + "[branch](" + tempHead.getDepth() + ")[" + tempHead.getHeight() + "] R-> ");
 			this.internalPrint(tempHead.getRightChild());
 		}
 	}
 
+	/**
+	 * Sets the head of the tree and updates the height of the node
+	 * 
+	 * @param node
+	 */
 	protected void setHead(Node<E> node) {
 		this.head = node;
 		this.head.setDepth(0);
 		this.head.setParent(null);
 	}
 
+	/**
+	 * Find and fix balancing issues using by calling the balance method on
+	 * unbalanced nodes
+	 * 
+	 * @param node
+	 *            The node to find and fix balancing issues
+	 */
 	protected void findProblems(Node<E> node) {
-		// if (node == null)
-		// return;
-		// this.findProblems(node.getLeftChild());
-		// this.findProblems(node.getRightChild());
+		if (node == null)
+			return;
+		// Balances the node if the height of one branch is more than one node
+		// greater than the other branch (i.e if the left child is 3 nodes high,
+		// but the right child is only one node high, then there is a balancing
+		// issue that must be fixed)
 		if (Math.abs(node.getHeightBias()) > 1)
 			balance(node);
 	}
 
+	/**
+	 * Fixes balancing issues of a node using the AVL self-balancing binary tree
+	 * balancing principles using the four cases,(left-left, left-right,
+	 * right-right, and right-left) where each case has a specific balancing
+	 * technique to fix the issue
+	 * 
+	 * @param root
+	 *            The node to balance
+	 */
 	protected void balance(Node<E> root) {
-		// Left case
 		int rootHeightBias = root.getHeightBias();
+
+		// Either left-left case or left-right case (as the first balancing
+		// issue spawns from the left child)
 		if (rootHeightBias < 0) {
 			Node<E> temp = root.getLeftChild();
 			int bias = temp.getHeightBias();
-			// Left-right case
+
+			// Left-right case because the second balancing issue spawns from
+			// the left child, fix by rotating the node left, moving the
+			// balancing
+			// issue to the right child, creating a left-left case, which is
+			// easy to fix
 			if (bias > 0)
 				this.rotateLeft(temp);
-			// Left left case (not in else because this is required for
-			// left-right case as well)
+
+			// Left-left case as the balancing problems stretch down the right
+			// side, fix by rotating the sub-tree left from the root node,
+			// creating a perfectly balanced sub-tree (even height on both
+			// sides)
 			this.rotateRight(root);
 			root.fixHeight();
+
+			// Update the heights of the nodes for further balancing later
 			temp.updateHeight();
 		}
-		// Right case
+
+		// Either right-right case or right-left case (as the first balancing
+		// issue spawns from the right child)
 		else if (rootHeightBias > 0) {
 			Node<E> temp = root.getRightChild();
 			int bias = temp.getHeightBias();
-			// Right-left case
+
+			// Right-left case because the second balancing issue spawns from
+			// the left child, fix by rotating the node left, moving the
+			// balancing
+			// issue to the right child, creating a right-right case, which is
+			// easy to fix
 			if (bias < 0)
 				this.rotateRight(temp);
-			// Right right case (not in else because this is required for
-			// right-left case as well)
+
+			// Right-right case as the balancing problems stretch down the right
+			// side, fix by rotating the sub-tree left from the root node,
+			// creating a perfectly balanced sub-tree (even height on both
+			// sides)
 			this.rotateLeft(root);
 			root.fixHeight();
+
+			// Update the heights of the nodes for further balancing later
 			temp.updateHeight();
 		}
 	}
 
+	/**
+	 * Recursively updates the height of specified node and all children nodes
+	 * 
+	 * @param node
+	 *            The node to update the heights from
+	 */
 	protected void updateHeights(Node<E> node) {
+		// Call the updateHeight() method of leaves (nodes with no children)
+		// only as the method updates
+		// the height of all of the nodes above it recursively
 		if (node.getLeftChild() == null) {
 			if (node.getRightChild() == null)
 				node.updateHeight();
@@ -264,8 +341,16 @@ public class BinaryTree<E extends Comparable<E>> {
 		}
 	}
 
-	protected boolean rotateRight(Node<E> root) {
+	/**
+	 * Performs a right rotation on the specified node
+	 * 
+	 * @param root
+	 *            the node to perform the rotation on
+	 */
+	protected void rotateRight(Node<E> root) {
 		Node<E> pivot = root.getLeftChild(), parent = root.getParent();
+
+		// Deal with special case of root being the head of the tree
 		if (this.head == root)
 			this.setHead(pivot);
 		root.setLeft(pivot.getRightChild());
@@ -276,11 +361,18 @@ public class BinaryTree<E extends Comparable<E>> {
 			else
 				parent.setRight(pivot);
 		}
-		return true;
 	}
 
-	protected boolean rotateLeft(Node<E> root) {
+	/**
+	 * Performs a left rotation on the specified node
+	 * 
+	 * @param root
+	 *            the node to perform the rotation on
+	 */
+	protected void rotateLeft(Node<E> root) {
 		Node<E> pivot = root.getRightChild(), parent = root.getParent();
+
+		// Deal with special case of root being the head of the tree
 		if (this.head == root)
 			this.setHead(pivot);
 		root.setRight(pivot.getLeftChild());
@@ -291,6 +383,5 @@ public class BinaryTree<E extends Comparable<E>> {
 			else
 				parent.setRight(pivot);
 		}
-		return true;
 	}
 }

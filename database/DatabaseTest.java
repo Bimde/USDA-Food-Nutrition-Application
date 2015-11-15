@@ -18,14 +18,17 @@ class DatabaseTest {
 		Scanner in = new Scanner(System.in);
 		while (true) {
 			FoodPacketList list = test.search(in.nextLine());
-			list.print();
+			list.print();		
 			System.out.println("done");
-			String[] temp = list.getHead().getItem().getLanguals();
-			String[] languals = test.getLanguals(temp).toArray();
-			System.out.println(list.getSize());
-			if (languals != null)
-				for (String i : languals)
-					System.out.println(i);
+			if (list.getSize() != 0) {
+				System.out.println(list.getHead().getItem().getValue("Long_Desc"));
+				String[] temp = list.getHead().getItem().getLanguals();
+				String[] languals = test.getLanguals(temp).toArray();
+				System.out.println(list.getSize());
+				if (languals != null)
+					for (String i : languals)
+						System.out.println(i);
+			}
 		}
 	}
 }
