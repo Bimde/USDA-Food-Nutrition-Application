@@ -131,8 +131,9 @@ public class Database {
 
 	/**
 	 * PREFEREED METHOD: Due to efficiency of comparing integers instead to
-	 * strings Finds the description of the requested food group using key in
-	 * intriguer format
+	 * strings <br>
+	 * Finds the description of the requested food group using key in intriguer
+	 * format
 	 * 
 	 * @param no
 	 *            Food group number
@@ -147,7 +148,9 @@ public class Database {
 	 * format
 	 * 
 	 * @param no
-	 *            Food group number
+	 *            Food group number <br>
+	 *            <b>MUST MATCH EXACTLY</b> for example: get("100") will not
+	 *            return the food group description with key "0100"
 	 * @return The description of the requested food group
 	 */
 	public String getFoodGroup(String no) {
@@ -171,7 +174,10 @@ public class Database {
 	 * Finds the information associated with the requested nutrient number
 	 * 
 	 * @param key
-	 *            the nutrient key (primary key in 'NUTR_DEF' file), ex. '301'
+	 *            the nutrient key (primary key in 'NUTR_DEF' file), ex. "301"
+	 *            in string form<br>
+	 *            <b>MUST MATCH EXACTLY</b> for example: get("101") will not
+	 *            return the info about the nutrient with key "0101"
 	 * @return The information associated with the requested nutrient number
 	 */
 	public FoodPacket getNutrientData(String key) {
@@ -197,12 +203,14 @@ public class Database {
 	}
 
 	/**
-	 * ** MOST EFFICIENT way to retrieve info if you have primary key** **
-	 * Useful for getting reference data based of reference key Finds a
-	 * FoodPacket based on supplied primary key
+	 * ** MOST EFFICIENT way to retrieve info if you have primary key **<br>
+	 * Useful for getting reference data based of reference key <br>
+	 * Finds a FoodPacket based on supplied primary key
 	 * 
 	 * @param key
-	 * @return
+	 *            Primary key from 'FOOD_DES.txt' file associated with desired
+	 *            food
+	 * @return FoodPacket object associated with the provided key
 	 */
 	public FoodPacket getFood(int key) {
 		return this.main.get(key);
@@ -210,7 +218,7 @@ public class Database {
 
 	/**
 	 * Allows user to add food item to the database (saves item in both
-	 * datastructures (memory) and permanant files (*.txt files)
+	 * data-structures (memory) and permanent files (*.txt files)
 	 * 
 	 * @param description
 	 *            The important information to add, pertaining to the

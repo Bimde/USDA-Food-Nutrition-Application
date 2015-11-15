@@ -1,7 +1,8 @@
 package database.datastrucutres;
 
 /**
- * Data packet containing one food item and all associated data references
+ * Data packet containing one food item and all associated data references (can
+ * be reused for other applications)
  * 
  * @author Bimesh De Silva
  * @version Final (November 2015)

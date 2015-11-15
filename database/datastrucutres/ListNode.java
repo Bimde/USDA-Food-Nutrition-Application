@@ -7,25 +7,25 @@ package database.datastrucutres;
  * @author Bimesh De Silva
  * @version Final (November 2015)
  *
- * @param <E>
+ * @param <T>
  *            Type of item for node to hold
  */
-public class ListNode<E> {
+public class ListNode<T> {
 
 	/**
 	 * The item to hold
 	 */
-	private E item;
+	private T item;
 
 	/**
 	 * Reference to following node
 	 */
-	private ListNode<E> next;
+	private ListNode<T> next;
 
 	/**
 	 * Reference to preceding node
 	 */
-	private ListNode<E> previous;
+	private ListNode<T> previous;
 
 	/**
 	 * Integer value of priority (useful if being used as priority queue)
@@ -36,9 +36,9 @@ public class ListNode<E> {
 	 * Creates a new node containing specified object
 	 * 
 	 * @param value
-	 *            preceding
+	 *            Object of type T for node to hold
 	 */
-	public ListNode(E value) {
+	public ListNode(T value) {
 		this.item = value;
 	}
 
@@ -46,39 +46,75 @@ public class ListNode<E> {
 	 * Creates a new node with specified object and priority
 	 * 
 	 * @param value
-	 *            preceding
+	 *            Object of type T for node to hold
 	 * @param priority
+	 *            Priority value used for a priority queue
 	 */
-	public ListNode(E value, int priority) {
+	public ListNode(T value, int priority) {
 		this.item = value;
 		this.priority = priority;
 	}
-	
-	public ListNode<E> getNext() {
+
+	/**
+	 * Getter for the following node
+	 * 
+	 * @return THe following node
+	 */
+	public ListNode<T> getNext() {
 		return this.next;
 	}
 
-	public void setPrevious(ListNode<E> node) {
+	/**
+	 * Setter for the preceding node
+	 * 
+	 * @param node
+	 *            Node to set as preceding
+	 */
+	public void setPrevious(ListNode<T> node) {
 		this.previous = node;
 	}
 
-	public ListNode<E> getPrevious() {
+	/**
+	 * Getter for the preceding node
+	 * 
+	 * @return The preceding node
+	 */
+	public ListNode<T> getPrevious() {
 		return this.previous;
 	}
 
-	public E getItem() {
+	/**
+	 * Getter for the contained item (of type T)
+	 * 
+	 * @return Contained item
+	 */
+	public T getItem() {
 		return this.item;
 	}
 
-	public void setNext(ListNode<E> next) {
+	/**
+	 * Setter for the following node
+	 * 
+	 * @param node
+	 *            Node to set as following
+	 */
+	public void setNext(ListNode<T> next) {
 		this.next = next;
 	}
 
+	/**
+	 * Returns the .toString() method's value for the contained object
+	 */
 	@Override
 	public String toString() {
 		return this.item.toString();
 	}
 
+	/**
+	 * Getter for the priority value (ONLY IF APPLICABLE)
+	 * 
+	 * @return Priority value
+	 */
 	public int getPriority() {
 		return this.priority;
 	}

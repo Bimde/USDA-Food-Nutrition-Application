@@ -7,19 +7,19 @@ package database.datastrucutres;
  * @author Bimesh De Silva
  * @version Final (November 2015)
  *
- * @param <E>
+ * @param <T>
  *            Type of item for nodes to hold
  */
-public class LinkedList<E> {
+public class LinkedList<T> {
 	/**
 	 * Reference to first node in list
 	 */
-	protected ListNode<E> head;
+	protected ListNode<T> head;
 
 	/**
 	 * Reference to last node in list
 	 */
-	protected ListNode<E> end;
+	protected ListNode<T> end;
 
 	/**
 	 * Number of nodes in list
@@ -38,7 +38,7 @@ public class LinkedList<E> {
 	 * 
 	 * @return the first node in the list
 	 */
-	public ListNode<E> getHead() {
+	public ListNode<T> getHead() {
 		return this.head;
 	}
 
@@ -66,8 +66,8 @@ public class LinkedList<E> {
 	 * @param item
 	 *            The item to add to the list
 	 */
-	public void add(E item) {
-		ListNode<E> add = new ListNode<E>(item);
+	public void add(T item) {
+		ListNode<T> add = new ListNode<T>(item);
 		if (this.head == null)
 			this.head = add;
 		else {
@@ -80,22 +80,22 @@ public class LinkedList<E> {
 	/**
 	 * Creates a new array of all of the objects
 	 * 
-	 * @return array of objects or NULL IF EMPTY
+	 * @return array of objects or NULL IF TMPTY
 	 */
-	public E[] toArray() {
+	public T[] toArray() {
 		if (this.isEmpty())
 			return null;
 
 		// Calls a special method to create the array for String because you
 		// cannot cast an Object array to a String array
 		if (this.head.getItem() instanceof String)
-			return (E[]) toStringArray();
+			return (T[]) toStringArray();
 
-		// Creates an array of type 'E' using casting technique
-		E[] foods = (E[]) new Object[this.size];
+		// Creates an array of type 'T' using casting technique
+		T[] foods = (T[]) new Object[this.size];
 
 		// Add the items to the array iteratively
-		ListNode<E> temp = this.head;
+		ListNode<T> temp = this.head;
 		for (int i = 0; i < foods.length; i++) {
 			foods[i] = temp.getItem();
 			temp = temp.getNext();
@@ -103,17 +103,17 @@ public class LinkedList<E> {
 		return foods;
 	}
 
-	public void merge(LinkedList<E> list) {
+	public void merge(LinkedList<T> list) {
 		this.end.setNext(list.getHead());
 		this.size += list.getSize();
 	}
 
 	/**
-	 * FOR DEBUGGING PURPOSES: interatively prints out the values of all of the
+	 * FOR DTBUGGING PURPOSTS: interatively prints out the values of all of the
 	 * items in the list, from head onwards
 	 */
 	public void print() {
-		ListNode<E> temp = this.head;
+		ListNode<T> temp = this.head;
 		while (temp != null) {
 			System.out.println(temp.getItem());
 			temp = temp.getNext();
@@ -126,7 +126,7 @@ public class LinkedList<E> {
 	 * @param node
 	 *            Node to add
 	 */
-	public void add(ListNode<E> node) {
+	public void add(ListNode<T> node) {
 		if (this.head == null)
 			this.head = node;
 		else {
@@ -139,13 +139,13 @@ public class LinkedList<E> {
 	/**
 	 * Special method to create array of objects if the objects are strings
 	 * 
-	 * @return arrays of string objects
+	 * @return Array of string objects
 	 */
 	private String[] toStringArray() {
 		if (this.size == 0)
 			return null;
 		String[] foods = new String[this.size];
-		ListNode<E> temp = this.head;
+		ListNode<T> temp = this.head;
 		for (int i = 0; i < foods.length; i++) {
 			foods[i] = (String) temp.getItem();
 			temp = temp.getNext();
