@@ -8,9 +8,9 @@ import database.datastrucutres.BinaryTree;
 import database.datastrucutres.FoodPacket;
 import database.datastrucutres.FoodPacketBinaryTree;
 import database.datastrucutres.IndependantSearchable;
-import database.datastrucutres.LinkedSearchable;
 import database.datastrucutres.Nutrient;
 import database.datastrucutres.NutrientList;
+import database.datastrucutres.Searchable;
 
 /**
  * Static class to parse files into appropriate data structure
@@ -127,7 +127,7 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public static BinaryTree<LinkedSearchable> parseLanguals(FoodPacketBinaryTree main) throws Exception {
+	public static BinaryTree<Searchable> parseLanguals(FoodPacketBinaryTree main) throws Exception {
 
 		// Load the primary keys (ex. A2001) into the FoodPacket objects in
 		// provided BinaryTree
@@ -145,7 +145,7 @@ class Parser {
 		// Create a new BinaryTree to link the primary keys from the langual
 		// descriptions file to the langual descriptions (allows user to get
 		// langual descriptions by providing primary key)
-		BinaryTree<LinkedSearchable> langualDescriptions = new BinaryTree<LinkedSearchable>();
+		BinaryTree<Searchable> langualDescriptions = new BinaryTree<Searchable>();
 		file = new File("LANGDESC.txt");
 		in = new BufferedReader(new FileReader(file));
 		line = in.readLine();

@@ -14,7 +14,7 @@ package database.datastrucutres;
  * @version Final (November 2015)
  *
  */
-public class IndependantSearchable extends LinkedSearchable {
+public class IndependantSearchable extends Searchable {
 
 	/**
 	 * The header value to store
@@ -22,15 +22,12 @@ public class IndependantSearchable extends LinkedSearchable {
 	private String header;
 
 	/**
-	 * Creates a new LinkedSearchable object with no value, 0 for the file
-	 * number and overwrites the header reference with the specified header
-	 * value
+	 * Creates a new Searchable object with no value and specified header value
 	 * 
 	 * @param header
 	 *            The header value to store
 	 */
 	public IndependantSearchable(String header) {
-		super(0, "", 0);
 		this.header = header;
 	}
 
@@ -44,7 +41,7 @@ public class IndependantSearchable extends LinkedSearchable {
 	 * @param fileNo
 	 */
 	public IndependantSearchable(String header, String value) {
-		super(0, value, 0);
+		this.value = value;
 		this.header = header;
 	}
 
@@ -61,7 +58,7 @@ public class IndependantSearchable extends LinkedSearchable {
 	 * reference
 	 */
 	@Override
-	public int compareTo(LinkedSearchable other) {
+	public int compareTo(Searchable other) {
 		if (this.header == null)
 			return 1;
 		else if (other.getHeader() == null)

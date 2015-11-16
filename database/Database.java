@@ -8,6 +8,7 @@ import database.datastrucutres.FoodPacket;
 import database.datastrucutres.FoodPacketBinaryTree;
 import database.datastrucutres.FoodPacketList;
 import database.datastrucutres.LinkedSearchable;
+import database.datastrucutres.Searchable;
 import database.datastrucutres.IndependantSearchable;
 import database.datastrucutres.LinkedList;
 
@@ -40,7 +41,7 @@ public class Database {
 	/**
 	 * Contains langual information (used primarily for searching)
 	 */
-	private BinaryTree<LinkedSearchable> languals;
+	private BinaryTree<Searchable> languals;
 
 	/**
 	 * Initializes and loads data into all data structures

@@ -8,7 +8,7 @@ package database.datastrucutres;
  * @version Final (November 2015)
  *
  */
-public class SearchableLinkedList extends LinkedList<LinkedSearchable> {
+public class SearchableLinkedList extends LinkedList<Searchable> {
 
 	/**
 	 * Creates an empty LinkedList of type LinkedSearchable
@@ -29,7 +29,7 @@ public class SearchableLinkedList extends LinkedList<LinkedSearchable> {
 	 *         STRING if not found
 	 */
 	public String get(String header) {
-		ListNode<LinkedSearchable> temp = this.head;
+		ListNode<Searchable> temp = this.head;
 
 		// Iteratively finds the node with the provided header value
 		while (temp != null) {
@@ -53,7 +53,7 @@ public class SearchableLinkedList extends LinkedList<LinkedSearchable> {
 	 *         otherwise
 	 */
 	boolean set(String header, String value) {
-		ListNode<LinkedSearchable> temp = this.head;
+		ListNode<Searchable> temp = this.head;
 		while (temp != null) {
 			if (temp.getItem().getHeader().equals(header)) {
 				temp.getItem().setValue(value);

@@ -229,7 +229,7 @@ public class Node<T> {
 		if (this.right == null) {
 			if (this.left == null)
 				return 0;
-			return this.left.getHeight() + 1;
+			return (this.left.getHeight() + 1) * -1;
 		}
 		if (this.left == null)
 			return this.right.getHeight() + 1;
