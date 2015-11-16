@@ -67,4 +67,12 @@ public class Nutrient implements Comparable<Nutrient> {
 	public int compareTo(Nutrient other) {
 		return other.getKey() - this.key;
 	}
+
+	/**
+	 * Returns the associated primary key
+	 */
+	@Override
+	public String toString() {
+		return this.key + "";
+	}
 }

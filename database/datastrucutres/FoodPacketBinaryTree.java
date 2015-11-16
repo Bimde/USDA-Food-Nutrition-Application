@@ -110,6 +110,24 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 	}
 
 	/**
+	 * Returns a FoodPacketList for added capabilities
+	 */
+	@Override
+	public FoodPacketList toLinkedList() {
+		FoodPacketList list = new FoodPacketList();
+		this.internalToLinkedList(this.head, list);
+		return list;
+	}
+	
+	public int getLargestKey() {
+		Node<FoodPacket> temp = this.head;
+		while(temp.getLeftChild() != null) {
+			temp = temp.getLeftChild();
+		}
+		return temp.getItem().getKey();
+	}
+
+	/**
 	 * Recursively find and add FoodPacket objects satisfying the criteria to a
 	 * provided priority queue, feeding in the number of matches to use in the
 	 * priority queue

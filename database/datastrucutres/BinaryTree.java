@@ -62,6 +62,17 @@ public class BinaryTree<T extends Comparable<T>> {
 	}
 
 	/**
+	 * Creates a linked list of type T with the items contained in each node
+	 * 
+	 * @return LinkedList of type T containing items from each node
+	 */
+	public LinkedList<T> toLinkedList() {
+		LinkedList<T> list = new LinkedList<T>();
+		this.internalToLinkedList(this.head, list);
+		return list;
+	}
+
+	/**
 	 * Checks whether the tree contains the specified item
 	 * 
 	 * @param item
@@ -385,5 +396,23 @@ public class BinaryTree<T extends Comparable<T>> {
 			else
 				parent.setRight(pivot);
 		}
+	}
+
+	/**
+	 * Recursively adds all the items in the tree to the specified LinkedList
+	 * 
+	 * @param node
+	 *            Current node which to add it's item to the list
+	 * @param list
+	 *            LinkedList of type T to add items to
+	 */
+	protected void internalToLinkedList(Node<T> node, LinkedList<T> list) {
+		if (node == null)
+			return;
+		list.add(node.getItem());
+
+		// Recursively call the method on all children of the node
+		this.internalToLinkedList(node.getLeftChild(), list);
+		this.internalToLinkedList(node.getRightChild(), list);
 	}
 }

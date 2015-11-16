@@ -1,16 +1,16 @@
 package database;
 
-/**
- * !!!!!!!!!!!!!!!!!!!!!!ASK MANGAT IF WE SHOULD PUT JD COMMENTS FOR CONSTRUCTORS!!!!!!!!!!!!!!!!
- */
+import java.io.IOException;
+
 import database.datastrucutres.BinaryTree;
 import database.datastrucutres.FoodPacket;
 import database.datastrucutres.FoodPacketBinaryTree;
 import database.datastrucutres.FoodPacketList;
-import database.datastrucutres.LinkedSearchable;
-import database.datastrucutres.Searchable;
 import database.datastrucutres.IndependantSearchable;
 import database.datastrucutres.LinkedList;
+import database.datastrucutres.Nutrient;
+import database.datastrucutres.NutrientList;
+import database.datastrucutres.Searchable;
 
 /**
  * Main object, creates and stores all USDA files' information
@@ -32,6 +32,20 @@ public class Database {
 	public static final String[][] groups = { { "0800", "2000" },
 			{ "0500", "0700", "1000", "1200", "1300", "1500", "1700" }, { "0900", "1100", "1600" }, { "0100" },
 			{ "0200", "0300", "0400", "0600", "1400", "1800", "1900", "2100", "2200", "2500", "3500", "3600" } };
+
+	public static final String[][] HEADERS = {
+			{ "NDB_No", "FdGrp_Cd", "Long_Desc", "Short_Desc", "ComName", "ManufacName", "Survey", "Ref_desc", "Refuse",
+					"SciName", "N_Factor", "Pro_Factor", "Fat_Factor", "CHO_Factor" },
+			{ "NDB_No", "Nutr_No", "Nutr_Val", "Num_Data_Pts", "Std_Error", "Src_Cd", "Derriv_Cd", "Ref_NDB_No",
+					"Add_Nutr_Mark", "Num_Studies", "Min", "Max", "DF", "Low_EB", "Up_EB", "Stat_cmt", "AddMod_Date",
+					"CC" },
+			{ "NDB_No", "Seq", "Amount", "Msre_Desc", "Gm_Wgt", "Num_Data_Pts", "Std_Dev" },
+			{ "Nutr_No", "Units", "Tagname", "NutrDesc", "Num_Dec", "SR_Order" }, { "FdGrp_Cd", "FdGrp_Desc" },
+			{ "Factor_Code", "Description" }, { "NDB_No", "Factor_Code" },
+			{ "NDB_No", "Footnt_No", "Footnt_Typ", "Nutr_No", "Footnt_Txt" } };
+
+	public static final String[] ADD_FOOD = { "FdGrp_Cd", "Long_Desc", "ComName" };
+	public static final String[] ADD_NUTRIENT = { "Nutr_No", "Nutr_Val" };
 
 	/**
 	 * Contains the information searchable by the user
@@ -171,6 +185,10 @@ public class Database {
 		return this.nutrientDef.get(key);
 	}
 
+	public FoodPacketList getAllNutrients() {
+		return this.nutrientDef.toLinkedList();
+	}
+
 	/**
 	 * Finds the information associated with the requested nutrient number
 	 * 
@@ -218,14 +236,64 @@ public class Database {
 	}
 
 	/**
-	 * Allows user to add food item to the database (saves item in both
-	 * data-structures (memory) and permanent files (*.txt files)
+	 * ** <b>THIS IS A PERMANENT ACTION</b> ** <br>
 	 * 
+	 * Allows the user to add a desired food with specified nutrients into the
+	 * data-structures and files <br>
+	 * <br>
+	 * 
+	 * <b>Use the format specified in the public static 'Database.ADD_NUTRIENT'
+	 * array </b> for the structure of the individual arrays for the nutrient
+	 * information
+	 * 
+	 * @param foodGroupCode
+	 *            Specific food group code the food item falls under (primary
+	 *            key from 'FD_GROUP.txt')
 	 * @param description
-	 *            The important information to add, pertaining to the
-	 *            ADD_FOOD_SPECIFICATIONS public static array
+	 *            Description of food, in key words, separated by commas
+	 * @param commonName
+	 *            Common names of the food item separated by commas (i.e 'Seeds,
+	 *            shells')
+	 * @param manufacturerName
+	 *            (If applicable) Name of manufacturer of food item
+	 * @param nutrientInfo
+	 *            2-dimensional string array containing n arrays of the
+	 *            'Nutr_No' and 'Nutr_Val', n being the number of associated
+	 *            nutrients. '<b>Nutr_No</b>' is the primary key for the
+	 *            'NUTR_DEF.txt' file and '<b>Nutr_Val</b>' is the amount of the
+	 *            nutrient in 100g of the food item
 	 */
-	public void addFood(String[] descriptions) {
-
+	public void addFood(String foodGroupCode, String description, String commonName, String manufacturerName,
+			String[][] nutrientInfo) {
+		if (!Character.isUpperCase(description.charAt(0))) {
+			try {
+				description = Character.toUpperCase(description.charAt(0)) + description.substring(1);
+			} catch (Exception e) {
+				// If this capitalization didn't work, then leave the
+				// description as it is
+			}
+		}
+		String[] foodDescription = { (this.main.getLargestKey() + 1) + "", foodGroupCode, description, "", commonName,
+				manufacturerName, "", "", "", "", "", "", "", "11/2015" };
+		FoodPacket item = new FoodPacket(foodDescription, FoodPacketBinaryTree.FOOD_DES);
+		this.main.add(item);
+		NutrientList nutrients = new NutrientList();
+		for (String[] values : nutrientInfo) {
+			nutrients.add(new Nutrient(values));
+			try {
+				Parser.addToFile(new String[] { foodDescription[0], values[0], values[1], "", "", "", "", "", "", "",
+						"", "", "", "", "", "", "", "" }, "NUT_DATA.txt", FoodPacketBinaryTree.NUT_DATA);
+			} catch (IOException e) {
+				System.err.println("Error adding nutrient data for food '" + description + "' to 'NUT_DATA.txt'");
+				e.printStackTrace();
+			}
+		}
+		item.addNutrients(nutrients);
+		try {
+			Parser.addToFile(foodDescription, "FOOD_DES.txt", FoodPacketBinaryTree.FOOD_DES);
+		} catch (IOException e) {
+			System.err.println("Error adding food '" + description + "' to 'FOOD_DES.txt'");
+			e.printStackTrace();
+		}
 	}
 }

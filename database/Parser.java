@@ -1,8 +1,12 @@
 package database;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 
 import database.datastrucutres.BinaryTree;
 import database.datastrucutres.FoodPacket;
@@ -20,6 +24,11 @@ import database.datastrucutres.Searchable;
  *
  */
 class Parser {
+
+	public static final boolean[][] NUMERIC = new boolean[][] {
+			{ false, false, false, false, false, false, false, false, true, false, true, true, true, true, },
+			{ false, false, true, true, true, false, false, false, false, true, true, true, true, true, true, false,
+					true, false } };
 
 	/**
 	 * **General parsing method for majority of files Inputs data from specified
@@ -77,7 +86,12 @@ class Parser {
 			// Continues adding items to list as long as the primary key (key
 			// which identifies which food the nutrient is in) is the same
 			while (line != null && Integer.parseInt(values[0]) == key) {
-				nutrients.add(new Nutrient(values));
+
+				// Strip the 'NDB_No' from the Nutrient object to eliminate
+				// duplicate data
+				String[] tempData = Arrays.copyOfRange(values, 1, values.length);
+
+				nutrients.add(new Nutrient(tempData));
 				line = in.readLine();
 				values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA].length);
 			}
@@ -158,6 +172,35 @@ class Parser {
 	}
 
 	/**
+	 * 
+	 * @param data
+	 *            String array of data to write to file
+	 * @param fileName
+	 *            File to write data to
+	 * @param fileNo
+	 *            Index from FoodPacketBinaryTree class associated with file,
+	 *            for example, use 'FoodPacketBinaryTree.FOOD_DES' for
+	 *            'FOOD_DES.txt'
+	 * @throws IOException
+	 *             If the named file exists but is a directory rather than a
+	 *             regular file, does not exist but cannot be created, or cannot
+	 *             be opened for any other reason (from FileWriter)
+	 */
+	public static void addToFile(String[] data, String fileName, int fileNo) throws IOException {
+		// Adds data to the file instead of overwriting it
+		BufferedWriter out = new BufferedWriter(new FileWriter(new File(fileName), true));
+
+		// Calls the join method to convert the string array into a string using
+		// the boolean array to format the fields as numeric or text
+		out.write(join(data, NUMERIC[fileNo]));
+
+		// Add a new line to the end of the file to maintain a consistent format
+		// with the provided USDA files
+		out.newLine();
+		out.close();
+	}
+
+	/**
 	 * Splits a line of text into a String array using '^' as the delimiter Also
 	 * removes all trailing and leading '^' characters from the strings
 	 * 
@@ -177,7 +220,7 @@ class Parser {
 
 		// Loop through each line and add break information into array using i
 		// as the start of the string and j as the position of the found
-		// delimeter
+		// delimiter
 		for (int i = 0; i < length; i++) {
 			boolean done = false;
 			for (int j = i; !done && j < length; j++) {
@@ -198,7 +241,7 @@ class Parser {
 			}
 		}
 
-		// Deals with last case if there is no trailing '^' chracter
+		// Deals with last case if there is no trailing '^' character
 		if (length - 1 != lastCarrot) {
 			if (line.charAt(lastCarrot + 1) == '~')
 				data[index] = line.substring(lastCarrot + 2, line.length() - 1);
@@ -208,5 +251,33 @@ class Parser {
 		if (data[data.length - 1] == null)
 			data[data.length - 1] = "";
 		return data;
+	}
+
+	/**
+	 * Joins a provided string array into a single string using the provided
+	 * boolean array to specify is a field is numeric or text <br>
+	 * <br>
+	 * Formatting used: Each field is separated by a '^' character but only text
+	 * fields are surrounded by '~' characters
+	 * 
+	 * @param data
+	 * @param numeric
+	 * @return
+	 */
+	public static String join(String[] data, boolean[] numeric) {
+		String output = "";
+		for (int i = 0; i < data.length; i++) {
+			// Add the '~' characters only if the field is not numeric
+			if (!numeric[i]) {
+				output += "~" + data[i] + "~^";
+			} else {
+				output += data[i] + "^";
+			}
+		}
+		// Removes trailing '^' character if it exists to remain consistent with
+		// USDA formatting
+		if (output.charAt(output.length() - 1) == '^')
+			return output.substring(0, output.length() - 1);
+		return output;
 	}
 }

@@ -66,6 +66,27 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 	}
 
 	/**
+	 * Creates a new array of all of the objects
+	 * 
+	 * @return array of objects or NULL IF TMPTY
+	 */
+	public FoodPacket[] toArray() {
+		if (this.isEmpty())
+			return null;
+
+		// Creates an array of type 'T' using casting technique
+		FoodPacket[] items = new FoodPacket[this.size];
+
+		// Add the items to the array iteratively
+		ListNode<FoodPacket> temp = this.head;
+		for (int i = 0; i < items.length; i++) {
+			items[i] = temp.getItem();
+			temp = temp.getNext();
+		}
+		return items;
+	}
+
+	/**
 	 * ***PREFFERED METHOD due to increased speed of comparing integers vs.
 	 * comparing strings and increased time of getting string value of key from
 	 * associated values (as key in integer form is a separate 'free' call from

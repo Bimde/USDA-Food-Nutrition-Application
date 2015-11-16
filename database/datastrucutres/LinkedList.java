@@ -92,15 +92,15 @@ public class LinkedList<T> {
 			return (T[]) toStringArray();
 
 		// Creates an array of type 'T' using casting technique
-		T[] foods = (T[]) new Object[this.size];
+		T[] items = (T[]) new Object[this.size];
 
 		// Add the items to the array iteratively
 		ListNode<T> temp = this.head;
-		for (int i = 0; i < foods.length; i++) {
-			foods[i] = temp.getItem();
+		for (int i = 0; i < items.length; i++) {
+			items[i] = temp.getItem();
 			temp = temp.getNext();
 		}
-		return foods;
+		return items;
 	}
 
 	public void merge(LinkedList<T> list) {
