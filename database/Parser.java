@@ -29,6 +29,11 @@ class Parser {
 			{ false, false, false, false, false, false, false, false, true, false, true, true, true, true, },
 			{ false, false, true, true, true, false, false, false, false, true, true, true, true, true, true, false,
 					true, false } };
+	private Database database;
+
+	public Parser(Database database) {
+		this.database = database;
+	}
 
 	/**
 	 * **General parsing method for majority of files Inputs data from specified
@@ -45,7 +50,7 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public static FoodPacketBinaryTree parse(String fileName, int type) throws Exception {
+	public FoodPacketBinaryTree parse(String fileName, int type) throws Exception {
 		String[] headers = FoodPacketBinaryTree.HEADERS[type];
 		File file = new File(fileName);
 		BufferedReader in = new BufferedReader(new FileReader(file));
@@ -56,6 +61,7 @@ class Parser {
 			String[] values = split(line, headers.length);
 			tree.add(new FoodPacket(values, type));
 			line = in.readLine();
+			this.database.parsedOne();
 		}
 		in.close();
 		return tree;
@@ -71,7 +77,7 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public static void parseNutrients(FoodPacketBinaryTree main) throws Exception {
+	public void parseNutrients(FoodPacketBinaryTree main) throws Exception {
 		File file = new File("NUT_DATA.txt");
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
@@ -94,6 +100,7 @@ class Parser {
 				nutrients.add(new Nutrient(tempData));
 				line = in.readLine();
 				values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA].length);
+				this.database.parsedOne();
 			}
 			// When key changes, add list of nutrients to specified food
 			// object
@@ -112,7 +119,7 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public static void parseFootNotes(FoodPacketBinaryTree main) throws Exception {
+	public void parseFootNotes(FoodPacketBinaryTree main) throws Exception {
 		File file = new File("FOOTNOTE.txt");
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
@@ -124,6 +131,7 @@ class Parser {
 			int key = Integer.parseInt(values[0]);
 			main.get(key).addFootNote(values[4]);
 			line = in.readLine();
+			this.database.parsedOne();
 		}
 		in.close();
 	}
@@ -141,7 +149,7 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public static BinaryTree<Searchable> parseLanguals(FoodPacketBinaryTree main) throws Exception {
+	public BinaryTree<Searchable> parseLanguals(FoodPacketBinaryTree main) throws Exception {
 
 		// Load the primary keys (ex. A2001) into the FoodPacket objects in
 		// provided BinaryTree
@@ -153,6 +161,7 @@ class Parser {
 			int key = Integer.parseInt(values[0]);
 			main.get(key).addLanguals(values[1]);
 			line = in.readLine();
+			this.database.parsedOne();
 		}
 		in.close();
 
@@ -167,6 +176,7 @@ class Parser {
 			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.LANGDESC].length);
 			langualDescriptions.add(new IndependantSearchable(values[0], values[1]));
 			line = in.readLine();
+			this.database.parsedOne();
 		}
 		return langualDescriptions;
 	}
@@ -224,6 +234,7 @@ class Parser {
 		for (int i = 0; i < length; i++) {
 			boolean done = false;
 			for (int j = i; !done && j < length; j++) {
+
 				// Remove the '~' characters from the string if they exist
 				if (line.charAt(j) == '^') {
 					if (line.charAt(i) == '~')

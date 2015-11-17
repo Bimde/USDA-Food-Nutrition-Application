@@ -35,7 +35,7 @@ public class Nutrient implements Comparable<Nutrient> {
 	 * Returns the string value associated with the specified header
 	 * 
 	 * @param header
-	 *            obtainable from
+	 *            Obtainable from
 	 *            'FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA]',
 	 *            which contains all possible header options
 	 * @return String value associated with the specified header or a BLANK
@@ -43,7 +43,8 @@ public class Nutrient implements Comparable<Nutrient> {
 	 */
 	public String getValue(String header) {
 		for (int i = 0; i < this.data.length; i++) {
-			if (FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA][i].equals(header))
+			if (FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA][i]
+					.equals(header))
 				return this.data[i];
 		}
 		return "";

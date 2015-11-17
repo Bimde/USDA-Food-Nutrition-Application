@@ -46,6 +46,14 @@ public class Database {
 
 	public static final String[] ADD_FOOD = { "FdGrp_Cd", "Long_Desc", "ComName" };
 	public static final String[] ADD_NUTRIENT = { "Nutr_No", "Nutr_Val" };
+	public static final String[] FILE_NAMES = { "FOOD_DES.txt", "NUTR_DEF.txt", "FD_GROUP.txt", "LANGUAL.txt",
+			"FOOTNOTE.txt", "NUT_DATA.txt" };
+
+	public static final int TOTAL_LINES = 703395;
+
+	private int loading;
+	private boolean[] filesLoaded;
+	private boolean loaded;
 
 	/**
 	 * Contains the information searchable by the user
@@ -62,57 +70,64 @@ public class Database {
 	 */
 	public Database() {
 		long time = System.currentTimeMillis();
-
+		this.loading = 0;
 		// Load specified files into data structure
+		this.filesLoaded = new boolean[6];
 
-		// Food descriptions
-		try {
-			this.main = Parser.parse("FOOD_DES.txt", FoodPacketBinaryTree.FOOD_DES);
-		} catch (Exception e) {
-			System.err.println("Error loading 'FOOD_DES.txt'");
-			e.printStackTrace();
-		}
+		// Create the Parser object to do file input and data parsing
+		Parser parser = new Parser(this);
 
-		// Nutrient definitions
-		try {
-			this.nutrientDef = Parser.parse("NUTR_DEF.txt", FoodPacketBinaryTree.NUTR_DEF);
-		} catch (Exception e) {
-			System.err.println("Error loading 'NUTR_DEF.txt'");
-			e.printStackTrace();
-		}
+		new Thread() {
+			public void run() {
+				// Load food description information
+				try {
+					Database.this.main = parser.parse("FOOD_DES.txt", 0);
+				} catch (Exception e) {
+					System.err.println("Error loading 'FOOD_DES.txt'");
+					e.printStackTrace();
+				}
+				// Set the loading status of 'FOOD_DES.txt'to true
+				Database.this.setFileLoaded(0);
 
-		// Food group descriptions
-		try {
-			this.foodGroups = Parser.parse("FD_GROUP.txt", FoodPacketBinaryTree.FD_GROUP);
-		} catch (Exception e) {
-			System.err.println("Error loading 'FD_GROUP.txt'");
-			e.printStackTrace();
-		}
-
-		// Langual information
-		try {
-			this.languals = Parser.parseLanguals(this.main);
-		} catch (Exception e) {
-			System.err.println("Error loading 'LANGUAL.txt'");
-			e.printStackTrace();
-		}
-
-		// Foot notes
-		try {
-			Parser.parseFootNotes(this.main);
-		} catch (Exception e) {
-			System.err.println("Error loading 'FOOTNOTE.txt'");
-			e.printStackTrace();
-		}
-
-		// Nutrient data for each food item
-		try {
-			Parser.parseNutrients(this.main);
-		} catch (Exception e) {
-			System.err.println("Error loading 'NUT_DATA.txt'");
-			e.printStackTrace();
-		}
-		System.err.println("Time taken: " + (System.currentTimeMillis() - time) / 1000.0);
+				try {
+					Database.this.nutrientDef = parser.parse("NUTR_DEF.txt", 3);
+				} catch (Exception e) {
+					System.err.println("Error loading 'NUTR_DEF.txt'");
+					e.printStackTrace();
+				}
+				Database.this.setFileLoaded(1);
+				try {
+					Database.this.foodGroups = parser.parse("FD_GROUP.txt", 4);
+				} catch (Exception e) {
+					System.err.println("Error loading 'FD_GROUP.txt'");
+					e.printStackTrace();
+				}
+				Database.this.setFileLoaded(2);
+				try {
+					Database.this.languals = parser.parseLanguals(Database.this.main);
+				} catch (Exception e) {
+					System.err.println("Error loading 'LANGUAL.txt'");
+					e.printStackTrace();
+				}
+				Database.this.setFileLoaded(3);
+				try {
+					parser.parseFootNotes(Database.this.main);
+				} catch (Exception e) {
+					System.err.println("Error loading 'FOOTNOTE.txt'");
+					e.printStackTrace();
+				}
+				Database.this.setFileLoaded(4);
+				try {
+					parser.parseNutrients(Database.this.main);
+				} catch (Exception e) {
+					System.err.println("Error loading 'NUT_DATA.txt'");
+					e.printStackTrace();
+				}
+				Database.this.setFileLoaded(4);
+				Database.this.setLoaded();
+				System.err.println("Time taken: " + (System.currentTimeMillis() - time) / 1000.0D);
+			}
+		}.start();
 	}
 
 	/**
@@ -296,4 +311,34 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+
+	private synchronized void setFileLoaded(int index) {
+		this.filesLoaded[index] = true;
+	}
+
+	synchronized void setLoaded() {
+		this.loaded = true;
+	}
+
+	synchronized void parsedOne() {
+		this.loading += 1;
+	}
+
+	synchronized int getLoadedLines() {
+		return this.loading;
+	}
+
+	public synchronized boolean isLoaded() {
+		return this.loaded;
+	}
+
+	public synchronized String getLoadingMessage() {
+		for (int i = 0; i < this.filesLoaded.length; i++) {
+			if (this.filesLoaded[i]) {
+				return "Loading " + FILE_NAMES[i] + " Loaded " + getLoadedLines() + " of " + 703395 + " lines.";
+			}
+		}
+		return "File's all loaded!";
+	}
+
 }

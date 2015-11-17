@@ -1,5 +1,7 @@
 package database.datastrucutres;
 
+import java.lang.reflect.Array;
+
 /**
  * Generic linked list to store data with fast load times and o(1)-O(n) read
  * times
@@ -86,13 +88,9 @@ public class LinkedList<T> {
 		if (this.isEmpty())
 			return null;
 
-		// Calls a special method to create the array for String because you
-		// cannot cast an Object array to a String array
-		if (this.head.getItem() instanceof String)
-			return (T[]) toStringArray();
-
 		// Creates an array of type 'T' using casting technique
-		T[] items = (T[]) new Object[this.size];
+		@SuppressWarnings("unchecked")
+		T[] items = internalToArray((Class<T>) this.getHead().getItem().getClass());
 
 		// Add the items to the array iteratively
 		ListNode<T> temp = this.head;
@@ -101,6 +99,11 @@ public class LinkedList<T> {
 			temp = temp.getNext();
 		}
 		return items;
+	}
+
+	@SuppressWarnings("unchecked")
+	public T[] internalToArray(Class<T> clazz) {
+		return (T[]) Array.newInstance(clazz, this.getSize());
 	}
 
 	public void merge(LinkedList<T> list) {
@@ -134,22 +137,5 @@ public class LinkedList<T> {
 		}
 		this.end = node;
 		this.size++;
-	}
-
-	/**
-	 * Special method to create array of objects if the objects are strings
-	 * 
-	 * @return Array of string objects
-	 */
-	private String[] toStringArray() {
-		if (this.size == 0)
-			return null;
-		String[] foods = new String[this.size];
-		ListNode<T> temp = this.head;
-		for (int i = 0; i < foods.length; i++) {
-			foods[i] = (String) temp.getItem();
-			temp = temp.getNext();
-		}
-		return foods;
 	}
 }
