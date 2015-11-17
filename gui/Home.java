@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 public class Home extends JPanel {
 	Main mainPanel;
+	SearchBar searchBar;
 
 	public Home(Main mainPanel) {
 		super(new GridBagLayout());
@@ -17,7 +18,7 @@ public class Home extends JPanel {
 		this.setPreferredSize(new Dimension(900, 600));
 		this.setBackground(Color.GRAY);
 
-		SearchBar searchBar = new SearchBar(mainPanel);
+		this.searchBar = new SearchBar(mainPanel);
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridx = 0;
@@ -28,5 +29,10 @@ public class Home extends JPanel {
 		constraints.ipady = 10;
 
 		this.add(searchBar, constraints);
+	}
+	
+	public void internallyRequestFocus() {
+		this.requestFocusInWindow();
+		this.searchBar.requestFocusInWindow();
 	}
 }

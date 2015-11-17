@@ -31,9 +31,10 @@ public class SearchBar extends JTextField implements DocumentListener {
 		new Updatable(this.updated) {
 			public void run() {
 				try {
-					Thread.sleep(500);
+					Thread.sleep(Main.SEARCH_DELAY);
 					if (getUpdates() == SearchBar.this.getLastUpdated()) {
-						SearchBar.this.mainPanel.showResults(SearchBar.this.getText());
+						SearchBar.this.mainPanel.showResults(SearchBar.this
+								.getText());
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();

@@ -25,12 +25,26 @@ import database.datastrucutres.Searchable;
  */
 class Parser {
 
+	/**
+	 * Boolean arrays with 'true' values representing fields that are numeric in
+	 * the specified files
+	 */
 	public static final boolean[][] NUMERIC = new boolean[][] {
 			{ false, false, false, false, false, false, false, false, true, false, true, true, true, true, },
 			{ false, false, true, true, true, false, false, false, false, true, true, true, true, true, true, false,
 					true, false } };
+
+	/**
+	 * Database object used for updating number of bytes parse
+	 */
 	private Database database;
 
+	/**
+	 * Created a new Parser object to load data
+	 * 
+	 * @param database
+	 *            Database object which to update with loading status
+	 */
 	public Parser(Database database) {
 		this.database = database;
 	}
@@ -39,7 +53,7 @@ class Parser {
 	 * **General parsing method for majority of files Inputs data from specified
 	 * text file into FoodPacketBinaryTree
 	 * 
-	 * @param fileName
+	 * @param file
 	 *            The file to load data from
 	 * @param type
 	 *            The number associated with the file (obtainable from
@@ -50,9 +64,9 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public FoodPacketBinaryTree parse(String fileName, int type) throws Exception {
+	public FoodPacketBinaryTree parse(File file, int type) throws Exception {
 		String[] headers = FoodPacketBinaryTree.HEADERS[type];
-		File file = new File(fileName);
+		file.length();
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
 		FoodPacketBinaryTree tree = new FoodPacketBinaryTree();
@@ -60,8 +74,8 @@ class Parser {
 		while (line != null) {
 			String[] values = split(line, headers.length);
 			tree.add(new FoodPacket(values, type));
+			this.database.parsedBytes(line.getBytes().length);
 			line = in.readLine();
-			this.database.parsedOne();
 		}
 		in.close();
 		return tree;
@@ -71,14 +85,15 @@ class Parser {
 	 * ***ONLY loads data from 'NUT_DATA.txt'*** Specific loading method for
 	 * loading nutrient information into already existing BinaryTree
 	 * 
+	 * @param file
+	 * 
 	 * @param main
 	 *            The BinaryTree to load information into
 	 * @throws Exception
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public void parseNutrients(FoodPacketBinaryTree main) throws Exception {
-		File file = new File("NUT_DATA.txt");
+	public void parseNutrients(File file, FoodPacketBinaryTree main) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
 		while (line != null) {
@@ -98,9 +113,9 @@ class Parser {
 				String[] tempData = Arrays.copyOfRange(values, 1, values.length);
 
 				nutrients.add(new Nutrient(tempData));
+				this.database.parsedBytes(line.getBytes().length);
 				line = in.readLine();
 				values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA].length);
-				this.database.parsedOne();
 			}
 			// When key changes, add list of nutrients to specified food
 			// object
@@ -113,14 +128,15 @@ class Parser {
 	 * ***ONLY loads data from 'FOOTNOTE.txt'*** Specific loading method for
 	 * loading footnote information into already existing BinaryTree
 	 * 
+	 * @param file
+	 * 
 	 * @param main
 	 *            The BinaryTree to load information into
 	 * @throws Exception
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public void parseFootNotes(FoodPacketBinaryTree main) throws Exception {
-		File file = new File("FOOTNOTE.txt");
+	public void parseFootNotes(File file, FoodPacketBinaryTree main) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
 		while (line != null) {
@@ -130,8 +146,8 @@ class Parser {
 			// description to it
 			int key = Integer.parseInt(values[0]);
 			main.get(key).addFootNote(values[4]);
+			this.database.parsedBytes(line.getBytes().length);
 			line = in.readLine();
-			this.database.parsedOne();
 		}
 		in.close();
 	}
@@ -141,6 +157,9 @@ class Parser {
 	 * loading method for loading langual references into already existing
 	 * BinaryTree and langual descriptions into new BinaryTree
 	 * 
+	 * @param file1
+	 * @param file
+	 * 
 	 * @param main
 	 *            The BinaryTree to load information into
 	 * @return BinaryTree containing langual descriptions (which could be
@@ -149,19 +168,18 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public BinaryTree<Searchable> parseLanguals(FoodPacketBinaryTree main) throws Exception {
+	public BinaryTree<Searchable> parseLanguals(File file, File file1, FoodPacketBinaryTree main) throws Exception {
 
 		// Load the primary keys (ex. A2001) into the FoodPacket objects in
 		// provided BinaryTree
-		File file = new File("LANGUAL.txt");
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
 		while (line != null) {
 			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.LANGUAL].length);
 			int key = Integer.parseInt(values[0]);
 			main.get(key).addLanguals(values[1]);
+			this.database.parsedBytes(line.getBytes().length);
 			line = in.readLine();
-			this.database.parsedOne();
 		}
 		in.close();
 
@@ -169,14 +187,13 @@ class Parser {
 		// descriptions file to the langual descriptions (allows user to get
 		// langual descriptions by providing primary key)
 		BinaryTree<Searchable> langualDescriptions = new BinaryTree<Searchable>();
-		file = new File("LANGDESC.txt");
-		in = new BufferedReader(new FileReader(file));
+		in = new BufferedReader(new FileReader(file1));
 		line = in.readLine();
 		while (line != null) {
 			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.LANGDESC].length);
 			langualDescriptions.add(new IndependantSearchable(values[0], values[1]));
+			this.database.parsedBytes(line.getBytes().length);
 			line = in.readLine();
-			this.database.parsedOne();
 		}
 		return langualDescriptions;
 	}
@@ -272,8 +289,13 @@ class Parser {
 	 * fields are surrounded by '~' characters
 	 * 
 	 * @param data
+	 *            String array to join into one String
 	 * @param numeric
-	 * @return
+	 *            Boolean array using 'true' values to represent fields which
+	 *            should by numeric, and in turn not surrounded by '~'
+	 *            characters
+	 * @return New string which all data from the array formatted using above
+	 *         specifications
 	 */
 	public static String join(String[] data, boolean[] numeric) {
 		String output = "";

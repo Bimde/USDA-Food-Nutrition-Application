@@ -1,5 +1,6 @@
 package database;
 
+import java.io.File;
 import java.io.IOException;
 
 import database.datastrucutres.BinaryTree;
@@ -22,37 +23,68 @@ import database.datastrucutres.Searchable;
 public class Database {
 
 	/**
-	 * Represents index in array of generalized food groups
+	 * Represents index in array of generalized food FOOD_GROUPS
 	 */
 	public static final int GRAINS = 0, MEAT = 1, VEGETABLES = 2, DAIRY = 3, OTHER = 4;
 
 	/**
 	 * Generalized food group categories
 	 */
-	public static final String[][] groups = { { "0800", "2000" },
+	public static final String[][] FOOD_GROUPS = { { "0800", "2000" },
 			{ "0500", "0700", "1000", "1200", "1300", "1500", "1700" }, { "0900", "1100", "1600" }, { "0100" },
 			{ "0200", "0300", "0400", "0600", "1400", "1800", "1900", "2100", "2200", "2500", "3500", "3600" } };
 
-	public static final String[][] HEADERS = {
-			{ "NDB_No", "FdGrp_Cd", "Long_Desc", "Short_Desc", "ComName", "ManufacName", "Survey", "Ref_desc", "Refuse",
-					"SciName", "N_Factor", "Pro_Factor", "Fat_Factor", "CHO_Factor" },
-			{ "NDB_No", "Nutr_No", "Nutr_Val", "Num_Data_Pts", "Std_Error", "Src_Cd", "Derriv_Cd", "Ref_NDB_No",
-					"Add_Nutr_Mark", "Num_Studies", "Min", "Max", "DF", "Low_EB", "Up_EB", "Stat_cmt", "AddMod_Date",
-					"CC" },
-			{ "NDB_No", "Seq", "Amount", "Msre_Desc", "Gm_Wgt", "Num_Data_Pts", "Std_Dev" },
-			{ "Nutr_No", "Units", "Tagname", "NutrDesc", "Num_Dec", "SR_Order" }, { "FdGrp_Cd", "FdGrp_Desc" },
-			{ "Factor_Code", "Description" }, { "NDB_No", "Factor_Code" },
-			{ "NDB_No", "Footnt_No", "Footnt_Typ", "Nutr_No", "Footnt_Txt" } };
-
+	/**
+	 * Array of data used for the food description when adding foods to the
+	 * Database (Order of the variables in the 'addFood()' method)
+	 */
 	public static final String[] ADD_FOOD = { "FdGrp_Cd", "Long_Desc", "ComName" };
+
+	/**
+	 * Array of data used for the food's nutrient information when adding foods
+	 * to the Database (2-D nutrients array should have individual arrays of
+	 * this format)<br>
+	 * For example, use '{{ "Nutr_No", "Nutr_Val" }, { "Nutr_No", "Nutr_Val" },
+	 * { "Nutr_No", "Nutr_Val" }}' for three nutrients associated with a
+	 * specific food
+	 */
 	public static final String[] ADD_NUTRIENT = { "Nutr_No", "Nutr_Val" };
+
+	/**
+	 * Names of the files used in the database
+	 */
 	public static final String[] FILE_NAMES = { "FOOD_DES.txt", "NUTR_DEF.txt", "FD_GROUP.txt", "LANGUAL.txt",
-			"FOOTNOTE.txt", "NUT_DATA.txt" };
+			"LANGDESC.txt", "FOOTNOTE.txt", "NUT_DATA.txt" };
 
-	public static final int TOTAL_LINES = 703395;
+	/**
+	 * Total number of bytes in all of the files
+	 */
+	private long totalBytes;
 
-	private int loading;
+	/**
+	 * Amount of bytes currently loaded <br>
+	 * Incremented as the files are being loaded through the 'parsedBytes()'
+	 * method
+	 */
+	private long bytesLoaded;
+
+	/**
+	 * Boolean array representing all of the files and their loading status
+	 */
 	private boolean[] filesLoaded;
+
+	/**
+	 * All of the files used by the Database, loaded into as soon as a new
+	 * Database object is created
+	 */
+	private File[] files;
+
+	/**
+	 * Represents the loaded state of the entire Database<br>
+	 * False means at least one file is still to be loaded True means every
+	 * required data-structure has been filled and is the Database is ready to
+	 * be used
+	 */
 	private boolean loaded;
 
 	/**
@@ -70,18 +102,31 @@ public class Database {
 	 */
 	public Database() {
 		long time = System.currentTimeMillis();
-		this.loading = 0;
-		// Load specified files into data structure
-		this.filesLoaded = new boolean[6];
+		this.bytesLoaded = 0;
 
+		// Set the files to be loaded equal to the number of files
+		this.filesLoaded = new boolean[FILE_NAMES.length];
+
+		// Load specified files into data structure
 		// Create the Parser object to do file input and data parsing
 		Parser parser = new Parser(this);
 
+		// Loads the files in a new thread to allow for the Database object to
+		// be finished initializing and respond to loading status requests
 		new Thread() {
 			public void run() {
+
+				// Load all the files and add the number of bytes in each file
+				// to the 'totalBytes' variable
+				Database.this.files = new File[FILE_NAMES.length];
+				for (int i = 0; i < FILE_NAMES.length; i++) {
+					Database.this.files[i] = new File(FILE_NAMES[i]);
+					Database.this.totalBytes += Database.this.files[i].length();
+				}
+
 				// Load food description information
 				try {
-					Database.this.main = parser.parse("FOOD_DES.txt", 0);
+					Database.this.main = parser.parse(Database.this.files[0], FoodPacketBinaryTree.FOOD_DES);
 				} catch (Exception e) {
 					System.err.println("Error loading 'FOOD_DES.txt'");
 					e.printStackTrace();
@@ -89,42 +134,60 @@ public class Database {
 				// Set the loading status of 'FOOD_DES.txt'to true
 				Database.this.setFileLoaded(0);
 
+				// Load nutrient descriptions
 				try {
-					Database.this.nutrientDef = parser.parse("NUTR_DEF.txt", 3);
+					Database.this.nutrientDef = parser.parse(Database.this.files[1], FoodPacketBinaryTree.NUTR_DEF);
 				} catch (Exception e) {
 					System.err.println("Error loading 'NUTR_DEF.txt'");
 					e.printStackTrace();
 				}
+				// Set the loading status of 'NUTR_DEF.txt'to true
 				Database.this.setFileLoaded(1);
+
+				// Load food group descriptions
 				try {
-					Database.this.foodGroups = parser.parse("FD_GROUP.txt", 4);
+					Database.this.foodGroups = parser.parse(Database.this.files[2], FoodPacketBinaryTree.FD_GROUP);
 				} catch (Exception e) {
 					System.err.println("Error loading 'FD_GROUP.txt'");
 					e.printStackTrace();
 				}
+				// Set the loading status of 'FD_GROUP.txt'to true
 				Database.this.setFileLoaded(2);
+
+				// Load langual information
 				try {
-					Database.this.languals = parser.parseLanguals(Database.this.main);
+					Database.this.languals = parser.parseLanguals(Database.this.files[3], Database.this.files[4],
+							Database.this.main);
 				} catch (Exception e) {
 					System.err.println("Error loading 'LANGUAL.txt'");
 					e.printStackTrace();
 				}
+				// Set the loading status of 'LANGUAL.txt' and 'LANGDESC.txt' to
+				// true (Set together as these files load almost instantly and
+				// are loaded in the same method)
 				Database.this.setFileLoaded(3);
+				Database.this.setFileLoaded(4);
+
+				// Load footnote information
 				try {
-					parser.parseFootNotes(Database.this.main);
+					parser.parseFootNotes(Database.this.files[5], Database.this.main);
 				} catch (Exception e) {
 					System.err.println("Error loading 'FOOTNOTE.txt'");
 					e.printStackTrace();
 				}
-				Database.this.setFileLoaded(4);
+				// Set the loading status of 'FOOTNOTE.txt'to true
+				Database.this.setFileLoaded(5);
+
+				// Loading individual nutrient information for each food item
 				try {
-					parser.parseNutrients(Database.this.main);
+					parser.parseNutrients(Database.this.files[6], Database.this.main);
 				} catch (Exception e) {
 					System.err.println("Error loading 'NUT_DATA.txt'");
 					e.printStackTrace();
 				}
-				Database.this.setFileLoaded(4);
-				Database.this.setLoaded();
+				// Set the loading status of 'NUT_DATA.txt'to true
+				Database.this.setFileLoaded(6);
+
 				System.err.println("Time taken: " + (System.currentTimeMillis() - time) / 1000.0D);
 			}
 		}.start();
@@ -132,15 +195,21 @@ public class Database {
 
 	/**
 	 * Finds all items in tree which contain specified query in the long
-	 * description, short description, common name or primary key
+	 * description, short description, common name, primary key, or langual
+	 * information
 	 * 
 	 * @param query
 	 *            The string to search for
-	 * @return LinkedList of FoodPacket objects for all matches
+	 * @return LinkedList of FoodPacket objects for all matches, EMPTY linked
+	 *         list (.size() == 0) if not results found, or NULL if Database is
+	 *         not loaded
 	 */
 	public FoodPacketList search(String query) {
-		return this.main.search(query.replaceAll("^[,\\s]+", "").split("[,\\s]+"),
-				new String[] { "Long_Desc", "Short_Desc", "ComName", "NDB_No" }, true);
+		if (this.isLoaded()) {
+			return this.main.search(query.replaceAll("^[,\\s]+", "").split("[,\\s]+"),
+					new String[] { "Long_Desc", "Short_Desc", "ComName", "NDB_No" }, true);
+		}
+		return null;
 	}
 
 	/**
@@ -153,10 +222,15 @@ public class Database {
 	 *            The field to look at in the database
 	 * @param useLanguals
 	 *            Whether or not to search using langual information
-	 * @return LinkedList of FoodPacket objects for all matches
+	 * @return LinkedList of FoodPacket objects for all matches, EMPTY linked
+	 *         list (.size() == 0) if not results found, or NULL if Database is
+	 *         not loaded
 	 */
 	public FoodPacketList search(String[] queries, String[] headers, boolean useLanguals) {
-		return this.main.search(queries, headers, useLanguals);
+		if (this.isLoaded()) {
+			return this.main.search(queries, headers, useLanguals);
+		}
+		return null;
 	}
 
 	/**
@@ -167,10 +241,14 @@ public class Database {
 	 * 
 	 * @param no
 	 *            Food group number
-	 * @return The description of the requested food group
+	 * @return The description of the requested food group, BLANK string ("") if
+	 *         not found, or NULL if Database is not loaded
 	 */
 	public String getFoodGroup(int no) {
-		return this.foodGroups.get(no).getValue("FdGrp_Desc");
+		if (this.isLoaded()) {
+			return this.foodGroups.get(no).getValue("FdGrp_Desc");
+		}
+		return null;
 	}
 
 	/**
@@ -181,10 +259,14 @@ public class Database {
 	 *            Food group number <br>
 	 *            <b>MUST MATCH EXACTLY</b> for example: get("100") will not
 	 *            return the food group description with key "0100"
-	 * @return The description of the requested food group
+	 * @return The description of the requested food group, BLANK string ("") if
+	 *         not found, or NULL if Database is not loaded
 	 */
 	public String getFoodGroup(String no) {
-		return this.foodGroups.get(Integer.parseInt(no)).getValue("FdGrp_Desc");
+		if (this.isLoaded()) {
+			return this.foodGroups.get(Integer.parseInt(no)).getValue("FdGrp_Desc");
+		}
+		return null;
 	}
 
 	/**
@@ -194,14 +276,26 @@ public class Database {
 	 * 
 	 * @param key
 	 *            the nutrient key (primary key in 'NUTR_DEF' file), ex. '301'
-	 * @return The information associated with the requested nutrient number
+	 * @return The information associated with the requested nutrient number or
+	 *         NULL if not found or Database isn't loaded
 	 */
 	public FoodPacket getNutrientData(int key) {
-		return this.nutrientDef.get(key);
+		if (this.isLoaded()) {
+			return this.nutrientDef.get(key);
+		}
+		return null;
 	}
 
+	/**
+	 * Gets all nutrient information from the file 'NUTR_DEF.txt'
+	 * 
+	 * @return All nutrient descriptions or NULL if Database isn't loaded
+	 */
 	public FoodPacketList getAllNutrients() {
-		return this.nutrientDef.toLinkedList();
+		if (this.isLoaded()) {
+			return this.nutrientDef.toLinkedList();
+		}
+		return null;
 	}
 
 	/**
@@ -212,10 +306,14 @@ public class Database {
 	 *            in string form<br>
 	 *            <b>MUST MATCH EXACTLY</b> for example: get("101") will not
 	 *            return the info about the nutrient with key "0101"
-	 * @return The information associated with the requested nutrient number
+	 * @return The information associated with the requested nutrient number or
+	 *         NULL if not found or the Database isn't loaded
 	 */
 	public FoodPacket getNutrientData(String key) {
-		return this.nutrientDef.get(Integer.parseInt(key));
+		if (this.isLoaded()) {
+			return this.nutrientDef.get(Integer.parseInt(key));
+		}
+		return null;
 	}
 
 	/**
@@ -224,16 +322,19 @@ public class Database {
 	 * @param keys
 	 *            String array of primary keys from 'LANGDESC' file, ex. 'A0107'
 	 * @return LinkedList of same length as keys array (if keys are valid) of
-	 *         langual descriptions
+	 *         langual descriptions, or NULL if Database is not loaded yet
 	 */
 	public LinkedList<String> getLanguals(String[] keys) {
-		LinkedList<String> list = new LinkedList<String>();
-		if (keys == null || this.languals == null)
+		if (this.isLoaded()) {
+			LinkedList<String> list = new LinkedList<String>();
+			if (keys == null || this.languals == null)
+				return list;
+			for (String key : keys) {
+				list.add(this.languals.get(new IndependantSearchable(key)).getValue());
+			}
 			return list;
-		for (String key : keys) {
-			list.add(this.languals.get(new IndependantSearchable(key)).getValue());
 		}
-		return list;
+		return null;
 	}
 
 	/**
@@ -244,10 +345,14 @@ public class Database {
 	 * @param key
 	 *            Primary key from 'FOOD_DES.txt' file associated with desired
 	 *            food
-	 * @return FoodPacket object associated with the provided key
+	 * @return FoodPacket object associated with the provided key or NULL is not
+	 *         found or the Database is not ready
 	 */
 	public FoodPacket getFood(int key) {
-		return this.main.get(key);
+		if (this.isLoaded()) {
+			return this.main.get(key);
+		}
+		return null;
 	}
 
 	/**
@@ -280,65 +385,136 @@ public class Database {
 	 */
 	public void addFood(String foodGroupCode, String description, String commonName, String manufacturerName,
 			String[][] nutrientInfo) {
-		if (!Character.isUpperCase(description.charAt(0))) {
-			try {
-				description = Character.toUpperCase(description.charAt(0)) + description.substring(1);
-			} catch (Exception e) {
-				// If this capitalization didn't work, then leave the
-				// description as it is
+		if (this.isLoaded()) {
+			if (!Character.isUpperCase(description.charAt(0))) {
+				try {
+					description = Character.toUpperCase(description.charAt(0)) + description.substring(1);
+				} catch (Exception e) {
+					// If this capitalization didn't work, then leave the
+					// description as it is
+				}
 			}
-		}
-		String[] foodDescription = { (this.main.getLargestKey() + 1) + "", foodGroupCode, description, "", commonName,
-				manufacturerName, "", "", "", "", "", "", "", "11/2015" };
-		FoodPacket item = new FoodPacket(foodDescription, FoodPacketBinaryTree.FOOD_DES);
-		this.main.add(item);
-		NutrientList nutrients = new NutrientList();
-		for (String[] values : nutrientInfo) {
-			nutrients.add(new Nutrient(values));
+			String[] foodDescription = { (this.main.getLargestKey() + 1) + "", foodGroupCode, description, "",
+					commonName, manufacturerName, "", "", "", "", "", "", "", "11/2015" };
+			FoodPacket item = new FoodPacket(foodDescription, FoodPacketBinaryTree.FOOD_DES);
+			this.main.add(item);
+			NutrientList nutrients = new NutrientList();
+			for (String[] values : nutrientInfo) {
+				nutrients.add(new Nutrient(values));
+				try {
+					Parser.addToFile(new String[] { foodDescription[0], values[0], values[1], "", "", "", "", "", "",
+							"", "", "", "", "", "", "", "", "" }, "NUT_DATA.txt", FoodPacketBinaryTree.NUT_DATA);
+				} catch (IOException e) {
+					System.err.println("Error adding nutrient data for food '" + description + "' to 'NUT_DATA.txt'");
+					e.printStackTrace();
+				}
+			}
+			item.addNutrients(nutrients);
 			try {
-				Parser.addToFile(new String[] { foodDescription[0], values[0], values[1], "", "", "", "", "", "", "",
-						"", "", "", "", "", "", "", "" }, "NUT_DATA.txt", FoodPacketBinaryTree.NUT_DATA);
+				Parser.addToFile(foodDescription, "FOOD_DES.txt", FoodPacketBinaryTree.FOOD_DES);
 			} catch (IOException e) {
-				System.err.println("Error adding nutrient data for food '" + description + "' to 'NUT_DATA.txt'");
+				System.err.println("Error adding food '" + description + "' to 'FOOD_DES.txt'");
 				e.printStackTrace();
 			}
 		}
-		item.addNutrients(nutrients);
-		try {
-			Parser.addToFile(foodDescription, "FOOD_DES.txt", FoodPacketBinaryTree.FOOD_DES);
-		} catch (IOException e) {
-			System.err.println("Error adding food '" + description + "' to 'FOOD_DES.txt'");
-			e.printStackTrace();
-		}
 	}
 
+	/**
+	 * Sets file at the specified index as loaded Synchronized to prevent
+	 * multiple threads from updating the 'filesLoaded' array at the same time
+	 * and to lock the array from use by other methods
+	 * 
+	 * @param index
+	 *            Index of file to set as loaded
+	 */
 	private synchronized void setFileLoaded(int index) {
 		this.filesLoaded[index] = true;
+		if (index == this.filesLoaded.length - 1)
+			this.setLoaded();
 	}
 
-	synchronized void setLoaded() {
+	/**
+	 * Sets the loaded status of the database to true<br>
+	 * Synchronized to prevent multiple threads from updating the 'loaded'
+	 * variable at the same time and to lock the 'loaded' variable from use by
+	 * other methods
+	 */
+	private synchronized void setLoaded() {
 		this.loaded = true;
 	}
 
-	synchronized void parsedOne() {
-		this.loading += 1;
+	/**
+	 * Get the current number of loaded bytes<br>
+	 * Synchronized to prevent multiple threads from obtaining out-of-date
+	 * information and retrieval of data while it's being changed by the
+	 * 'parsedBytes()' methods
+	 * 
+	 * @return Current number of loaded bytes
+	 */
+	private synchronized long getLoadedBytes() {
+		return this.bytesLoaded;
 	}
 
-	synchronized int getLoadedLines() {
-		return this.loading;
+	/**
+	 * Adds specified number of bytes to the total bytes counts<br>
+	 * Synchronized to prevent multiple threads from updating the 'bytesLoaded'
+	 * variable at the same time and to lock the 'bytesLoaded' variable from use
+	 * by other methods
+	 * 
+	 * @param bytes
+	 *            The specified number of bytes processed from the file
+	 */
+	synchronized void parsedBytes(long bytes) {
+		this.bytesLoaded += bytes;
 	}
 
+	/**
+	 * Returns the loaded status of the database<br>
+	 * Synchronized to prevent GUI threads from obtaining out-of-date
+	 * information and retrieval of data while it's being changed by the
+	 * 'setLoaded()' method
+	 * 
+	 * @return Whether or not all the data structures in the Database object are
+	 *         fully loaded
+	 */
 	public synchronized boolean isLoaded() {
 		return this.loaded;
 	}
 
+	/**
+	 * Gets percentage of the data from the files have been loaded <br>
+	 * Synchronized to prevent GUI threads from obtaining out-of-date
+	 * information and retrieval of data while it's being changed by the
+	 * 'parsedBytes()' method
+	 * 
+	 * @return Percentage of the data from the files have been loaded (rounded
+	 *         down to the nearest integer)<br>
+	 *         A integer between 0 and 100
+	 */
+	public synchronized int getPercentageLoaded() {
+		return (int) (this.getLoadedBytes() * 100 / this.totalBytes);
+	}
+
+	/**
+	 * Creates a loading message with the current file being loaded and the
+	 * percentage of total data that has been loaded. <br>
+	 * <br>
+	 * Format: "Loading FILE_NAME.txt: x% completed!", x being the percentage of
+	 * the data from the files that have been loaded (from
+	 * 'getPercentageLoaded()' method)
+	 * 
+	 * @return The pre-formatted loading message with the file name and
+	 *         percentage loaded
+	 */
 	public synchronized String getLoadingMessage() {
+		// Loop through the filesLoaded boolean array to find the first file
+		// that isn't loaded yet (as the files are loaded in the order of the
+		// array) and return the message based on that file's name
 		for (int i = 0; i < this.filesLoaded.length; i++) {
-			if (this.filesLoaded[i]) {
-				return "Loading " + FILE_NAMES[i] + " Loaded " + getLoadedLines() + " of " + 703395 + " lines.";
+			if (!this.filesLoaded[i]) {
+				return "Loading " + FILE_NAMES[i] + ": " + this.getPercentageLoaded() + "% completed!";
 			}
 		}
 		return "File's all loaded!";
 	}
-
 }

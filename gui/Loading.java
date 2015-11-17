@@ -19,17 +19,18 @@ public class Loading extends JPanel {
 		setBackground(Color.LIGHT_GRAY);
 		this.label = new JLabel();
 		this.label.setFont(new Font("Serif", 0, 24));
-		add(this.label);
-		displayLoadMessages();
+		this.add(this.label);
+		this.displayLoadMessages();
 	}
 
 	private void displayLoadMessages() {
 		new Thread() {
 			public void run() {
 				while (!Loading.this.database.isLoaded()) {
-					Loading.this.label.setText(Loading.this.database.getLoadingMessage());
+					Loading.this.label.setText(Loading.this.database
+							.getLoadingMessage());
 					try {
-						Thread.sleep(100L);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
