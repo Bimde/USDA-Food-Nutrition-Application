@@ -1,12 +1,13 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import database.datastrucutres.FoodPacket;
 import database.datastrucutres.FoodPacketList;
@@ -38,7 +39,7 @@ public class Results extends JPanel {
 		constraints.ipady = 10;
 		this.add(this.searchBar, this.constraints);
 
-		this.scrollPane = new ResultsScrollPane();
+		this.scrollPane = new ResultsScrollPane(new JTable(new DefaultTableModel()));
 		constraints.gridx = 0;
 		constraints.gridwidth = 1;
 		constraints.gridy = 1;

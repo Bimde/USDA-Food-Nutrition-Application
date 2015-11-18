@@ -15,6 +15,7 @@ import database.datastrucutres.IndependantSearchable;
 import database.datastrucutres.Nutrient;
 import database.datastrucutres.NutrientList;
 import database.datastrucutres.Searchable;
+import database.datastrucutres.SearchableLinkedList;
 
 /**
  * Static class to parse files into appropriate data structure
@@ -168,11 +169,12 @@ class Parser {
 	 *             If file is not found or any errors occur when loading data
 	 *             into BinaryTree
 	 */
-	public BinaryTree<Searchable> parseLanguals(File file, File file1, FoodPacketBinaryTree main) throws Exception {
+	public BinaryTree<Searchable> parseLanguals(File langual, File langDesc, FoodPacketBinaryTree main)
+			throws Exception {
 
 		// Load the primary keys (ex. A2001) into the FoodPacket objects in
 		// provided BinaryTree
-		BufferedReader in = new BufferedReader(new FileReader(file));
+		BufferedReader in = new BufferedReader(new FileReader(langual));
 		String line = in.readLine();
 		while (line != null) {
 			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.LANGUAL].length);
@@ -187,7 +189,7 @@ class Parser {
 		// descriptions file to the langual descriptions (allows user to get
 		// langual descriptions by providing primary key)
 		BinaryTree<Searchable> langualDescriptions = new BinaryTree<Searchable>();
-		in = new BufferedReader(new FileReader(file1));
+		in = new BufferedReader(new FileReader(langDesc));
 		line = in.readLine();
 		while (line != null) {
 			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.LANGDESC].length);
@@ -196,6 +198,23 @@ class Parser {
 			line = in.readLine();
 		}
 		return langualDescriptions;
+	}
+
+	public void parseWeightData(File file, FoodPacketBinaryTree main) throws Exception {
+		BufferedReader in = new BufferedReader(new FileReader(file));
+		String line = in.readLine();
+		while (line != null) {
+			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.WEIGHT].length);
+			int key = Integer.parseInt(values[0]);
+			SearchableLinkedList weightData = new SearchableLinkedList();
+			while (line != null && Integer.parseInt(values[0]) == key) {
+				weightData.add(new IndependantSearchable(values[3],
+						Math.round((Double.parseDouble(values[4]) / Double.parseDouble(values[2])) * 10) / 10.0 + ""));
+				line = in.readLine();
+				values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.WEIGHT].length);
+			}
+			main.get(key).addWeightData(weightData);
+		}
 	}
 
 	/**

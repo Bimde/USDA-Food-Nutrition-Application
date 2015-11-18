@@ -41,6 +41,11 @@ public class FoodPacket implements Comparable<FoodPacket> {
 	private LinkedList<String> languals;
 
 	/**
+	 * Linked list containing related weight information
+	 */
+	private SearchableLinkedList weightData;
+
+	/**
 	 * Creates a food packet object which specified data and headers
 	 * 
 	 * @param data
@@ -196,5 +201,18 @@ public class FoodPacket implements Comparable<FoodPacket> {
 	 */
 	public String[] getLanguals() {
 		return this.languals.toArray();
+	}
+
+	public void addWeightData(SearchableLinkedList weightData) {
+		this.weightData = weightData;
+	}
+
+	public SearchableLinkedList getWeightData() {
+		// if (this.weightData == null) {
+		// return new SearchableLinkedList().add(new Searchable());// base
+		// // measurement
+		// // for item
+		// }
+		return this.weightData;
 	}
 }

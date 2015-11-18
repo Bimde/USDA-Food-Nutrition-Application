@@ -23,7 +23,7 @@ import database.datastrucutres.Searchable;
 public class Database {
 
 	/**
-	 * Represents index in array of generalized food FOOD_GROUPS
+	 * Represents index in array of generalized food groups
 	 */
 	public static final int GRAINS = 0, MEAT = 1, VEGETABLES = 2, DAIRY = 3, OTHER = 4;
 
@@ -53,8 +53,8 @@ public class Database {
 	/**
 	 * Names of the files used in the database
 	 */
-	public static final String[] FILE_NAMES = { "FOOD_DES.txt", "NUTR_DEF.txt", "FD_GROUP.txt", "LANGUAL.txt",
-			"LANGDESC.txt", "FOOTNOTE.txt", "NUT_DATA.txt" };
+	public static final String[] FILE_NAMES = { "FOOD_DES.txt", "NUT_DATA.txt", "WEIGHT.txt", "NUTR_DEF.txt",
+			"FD_GROUP.txt", "LANGDESC.txt", "LANGUAL.txt", "FOOTNOTE.txt", };
 
 	/**
 	 * Total number of bytes in all of the files
@@ -126,38 +126,61 @@ public class Database {
 
 				// Load food description information
 				try {
-					Database.this.main = parser.parse(Database.this.files[0], FoodPacketBinaryTree.FOOD_DES);
+					Database.this.main = parser.parse(Database.this.files[FoodPacketBinaryTree.FOOD_DES],
+							FoodPacketBinaryTree.FOOD_DES);
 				} catch (Exception e) {
 					System.err.println("Error loading 'FOOD_DES.txt'");
 					e.printStackTrace();
 				}
 				// Set the loading status of 'FOOD_DES.txt'to true
-				Database.this.setFileLoaded(0);
+				Database.this.setFileLoaded(FoodPacketBinaryTree.FOOD_DES);
+
+				// Loading individual nutrient information for each food item
+				try {
+					parser.parseNutrients(Database.this.files[FoodPacketBinaryTree.NUT_DATA], Database.this.main);
+				} catch (Exception e) {
+					System.err.println("Error loading 'NUT_DATA.txt'");
+					e.printStackTrace();
+				}
+				// Set the loading status of 'NUT_DATA.txt'to true
+				Database.this.setFileLoaded(FoodPacketBinaryTree.NUT_DATA);
+
+				// Load food weight information
+				try {
+					parser.parseWeightData(Database.this.files[FoodPacketBinaryTree.WEIGHT], Database.this.main);
+				} catch (Exception e) {
+					System.err.println("Error loading 'WEIGHT.txt'");
+					e.printStackTrace();
+				}
+				// Set the loading status of 'WEIGHT.txt'to true
+				Database.this.setFileLoaded(FoodPacketBinaryTree.WEIGHT);
 
 				// Load nutrient descriptions
 				try {
-					Database.this.nutrientDef = parser.parse(Database.this.files[1], FoodPacketBinaryTree.NUTR_DEF);
+					Database.this.nutrientDef = parser.parse(Database.this.files[FoodPacketBinaryTree.NUTR_DEF],
+							FoodPacketBinaryTree.WEIGHT);
 				} catch (Exception e) {
 					System.err.println("Error loading 'NUTR_DEF.txt'");
 					e.printStackTrace();
 				}
 				// Set the loading status of 'NUTR_DEF.txt'to true
-				Database.this.setFileLoaded(1);
+				Database.this.setFileLoaded(FoodPacketBinaryTree.NUTR_DEF);
 
 				// Load food group descriptions
 				try {
-					Database.this.foodGroups = parser.parse(Database.this.files[2], FoodPacketBinaryTree.FD_GROUP);
+					Database.this.foodGroups = parser.parse(Database.this.files[FoodPacketBinaryTree.FD_GROUP],
+							FoodPacketBinaryTree.FD_GROUP);
 				} catch (Exception e) {
 					System.err.println("Error loading 'FD_GROUP.txt'");
 					e.printStackTrace();
 				}
 				// Set the loading status of 'FD_GROUP.txt'to true
-				Database.this.setFileLoaded(2);
+				Database.this.setFileLoaded(FoodPacketBinaryTree.FD_GROUP);
 
 				// Load langual information
 				try {
-					Database.this.languals = parser.parseLanguals(Database.this.files[3], Database.this.files[4],
-							Database.this.main);
+					Database.this.languals = parser.parseLanguals(Database.this.files[FoodPacketBinaryTree.LANGUAL],
+							Database.this.files[FoodPacketBinaryTree.LANGDESC], Database.this.main);
 				} catch (Exception e) {
 					System.err.println("Error loading 'LANGUAL.txt'");
 					e.printStackTrace();
@@ -165,30 +188,20 @@ public class Database {
 				// Set the loading status of 'LANGUAL.txt' and 'LANGDESC.txt' to
 				// true (Set together as these files load almost instantly and
 				// are loaded in the same method)
-				Database.this.setFileLoaded(3);
-				Database.this.setFileLoaded(4);
+				Database.this.setFileLoaded(FoodPacketBinaryTree.LANGDESC);
+				Database.this.setFileLoaded(FoodPacketBinaryTree.LANGUAL);
 
 				// Load footnote information
 				try {
-					parser.parseFootNotes(Database.this.files[5], Database.this.main);
+					parser.parseFootNotes(Database.this.files[FoodPacketBinaryTree.FOOTNOTE], Database.this.main);
 				} catch (Exception e) {
 					System.err.println("Error loading 'FOOTNOTE.txt'");
 					e.printStackTrace();
 				}
 				// Set the loading status of 'FOOTNOTE.txt'to true
-				Database.this.setFileLoaded(5);
+				Database.this.setFileLoaded(FoodPacketBinaryTree.FOOTNOTE);
 
-				// Loading individual nutrient information for each food item
-				try {
-					parser.parseNutrients(Database.this.files[6], Database.this.main);
-				} catch (Exception e) {
-					System.err.println("Error loading 'NUT_DATA.txt'");
-					e.printStackTrace();
-				}
-				// Set the loading status of 'NUT_DATA.txt'to true
-				Database.this.setFileLoaded(6);
-
-				System.err.println("Time taken: " + (System.currentTimeMillis() - time) / 1000.0D);
+				System.err.println("Time taken: " + (System.currentTimeMillis() - time) / 1000.0);
 			}
 		}.start();
 	}

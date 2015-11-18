@@ -118,10 +118,10 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 		this.internalToLinkedList(this.head, list);
 		return list;
 	}
-	
+
 	public int getLargestKey() {
 		Node<FoodPacket> temp = this.head;
-		while(temp.getLeftChild() != null) {
+		while (temp.getLeftChild() != null) {
 			temp = temp.getLeftChild();
 		}
 		return temp.getItem().getKey();

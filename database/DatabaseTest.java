@@ -1,6 +1,7 @@
 package database;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import database.datastrucutres.FoodPacket;
@@ -51,11 +52,19 @@ class DatabaseTest {
 						System.out.println(i);
 			}
 
+			// if (!list.isEmpty()) {
+			// NutrientList nutrients = list.getHead().getItem().getNutrients();
+			// ListNode<Nutrient> temp = nutrients.getHead();
+			// while (temp != null) {
+			// System.out.println(temp.getItem());
+			// temp = temp.getNext();
+			// }
+			// }
+
 			if (!list.isEmpty()) {
-				NutrientList nutrients = list.getHead().getItem().getNutrients();
-				ListNode<Nutrient> temp = nutrients.getHead();
+				ListNode<FoodPacket> temp = list.getHead();
 				while (temp != null) {
-					System.out.println(temp.getItem());
+					System.out.println(Arrays.toString(temp.getItem().getWeightData().toArray()));
 					temp = temp.getNext();
 				}
 			}
