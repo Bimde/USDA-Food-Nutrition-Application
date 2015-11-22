@@ -226,13 +226,33 @@ public class Database {
 	}
 
 	/**
-	 * Finds all items in tree which contain specified query in the specified
-	 * fields
+	 * Finds all items in tree which contain specified query in the long
+	 * description, short description, common name, primary key, or langual
+	 * information
 	 * 
 	 * @param query
 	 *            The string to search for
 	 * @param header
-	 *            The field to look at in the database
+	 *            The field to look in
+	 * @return LinkedList of FoodPacket objects for all matches, EMPTY linked
+	 *         list (.size() == 0) if not results found, or NULL if Database is
+	 *         not loaded
+	 */
+	public FoodPacketList search(String query, String header) {
+		if (this.isLoaded()) {
+			return this.main.search(query.replaceAll("^[,\\s]+", "").split("[,\\s]+"), new String[] { header }, false);
+		}
+		return null;
+	}
+
+	/**
+	 * Finds all items in tree which contain specified query in the specified
+	 * fields
+	 * 
+	 * @param queries
+	 *            The strings to search for
+	 * @param header
+	 *            The fields to look at in the database
 	 * @param useLanguals
 	 *            Whether or not to search using langual information
 	 * @return LinkedList of FoodPacket objects for all matches, EMPTY linked
