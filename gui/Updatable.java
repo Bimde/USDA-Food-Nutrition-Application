@@ -1,4 +1,4 @@
-package gui;
+package tempgui;
 
 public abstract class Updatable extends Thread {
 	private long updates;

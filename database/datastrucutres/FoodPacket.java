@@ -58,11 +58,11 @@ public class FoodPacket implements Comparable<FoodPacket> {
 	 *            use 'FoodPacketBinaryTree.FOOD_DES' as the file number)
 	 */
 	public FoodPacket(String[] data, int fileNo) {
-		this.addData(data);
 		this.key = Integer.parseInt(data[0]);
 		this.footNotes = new LinkedList<String>();
 		this.languals = new LinkedList<String>();
 		this.fileNo = fileNo;
+		this.addData(data);
 	}
 
 	/**

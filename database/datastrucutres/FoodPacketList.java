@@ -9,6 +9,8 @@ package database.datastrucutres;
  */
 public class FoodPacketList extends LinkedList<FoodPacket> {
 
+	public static final int ALL_RESULTS = -1;
+
 	public FoodPacketList() {
 		super();
 	}
@@ -158,8 +160,9 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 		FoodPacketList list = new FoodPacketList();
 		ListNode<FoodPacket> temp = this.head;
 		for (String value : queries) {
+			value = value.toLowerCase();
 			while (temp != null) {
-				if (temp.getItem().getValue(field).equals(value))
+				if (temp.getItem().getValue(field).toLowerCase().contains(value))
 					list.add(temp.getItem());
 				temp = temp.getNext();
 			}
@@ -190,6 +193,32 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 			temp = temp.getNext();
 		}
 		return list;
+	}
+
+	/**
+	 * Creates string array of data inside the specified field from all nodes in
+	 * linked list
+	 * 
+	 * @param field
+	 *            The field to get the data from
+	 * @param maxResults
+	 *            Maximum length of the string array <br>
+	 *            Use FoodPacketList.ALL_RESULTS to get all the results
+	 * @return String array of desired information, in same order as linked list
+	 */
+	public String[] toStringArray(String field, int maxResults) {
+		int size = this.getSize();
+		if (maxResults >= 0)
+			size = Math.min(maxResults, size);
+		String[] array = new String[size];
+		ListNode<FoodPacket> temp = this.head;
+		int i = 0;
+		while (i < size) {
+			array[i] = temp.getItem().getValue(field);
+			i++;
+			temp = temp.getNext();
+		}
+		return array;
 	}
 
 }

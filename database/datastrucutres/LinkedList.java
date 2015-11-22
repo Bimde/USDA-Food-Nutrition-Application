@@ -102,7 +102,7 @@ public class LinkedList<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T[] internalToArray(Class<T> clazz) {
+	private T[] internalToArray(Class<T> clazz) {
 		return (T[]) Array.newInstance(clazz, this.getSize());
 	}
 
@@ -112,7 +112,7 @@ public class LinkedList<T> {
 	}
 
 	/**
-	 * FOR DTBUGGING PURPOSTS: interatively prints out the values of all of the
+	 * FOR DEBUGGING PURPOSTS: iteratively prints out the values of all of the
 	 * items in the list, from head onwards
 	 */
 	public void print() {

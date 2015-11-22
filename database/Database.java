@@ -158,7 +158,7 @@ public class Database {
 				// Load nutrient descriptions
 				try {
 					Database.this.nutrientDef = parser.parse(Database.this.files[FoodPacketBinaryTree.NUTR_DEF],
-							FoodPacketBinaryTree.WEIGHT);
+							FoodPacketBinaryTree.NUTR_DEF);
 				} catch (Exception e) {
 					System.err.println("Error loading 'NUTR_DEF.txt'");
 					e.printStackTrace();
@@ -399,6 +399,8 @@ public class Database {
 	public void addFood(String foodGroupCode, String description, String commonName, String manufacturerName,
 			String[][] nutrientInfo) {
 		if (this.isLoaded()) {
+			// Capitalize first letter of description to stay consistent with
+			// format
 			if (!Character.isUpperCase(description.charAt(0))) {
 				try {
 					description = Character.toUpperCase(description.charAt(0)) + description.substring(1);
@@ -411,6 +413,8 @@ public class Database {
 					commonName, manufacturerName, "", "", "", "", "", "", "", "11/2015" };
 			FoodPacket item = new FoodPacket(foodDescription, FoodPacketBinaryTree.FOOD_DES);
 			this.main.add(item);
+
+			// Add nutrient information to 'NUT_DATA.txt'
 			NutrientList nutrients = new NutrientList();
 			for (String[] values : nutrientInfo) {
 				nutrients.add(new Nutrient(values));
@@ -423,6 +427,8 @@ public class Database {
 				}
 			}
 			item.addNutrients(nutrients);
+
+			// Add food description information to 'FOOD_DES.txt'
 			try {
 				Parser.addToFile(foodDescription, "FOOD_DES.txt", FoodPacketBinaryTree.FOOD_DES);
 			} catch (IOException e) {
