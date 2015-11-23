@@ -51,6 +51,9 @@ class DatabaseTest {
 					for (String i : languals)
 						System.out.println(i);
 			}
+			NutrientList temp = list.getHead().getItem().getNutrients();
+			System.out.println(temp.getHead().getItem());
+			System.out.println(temp.getHead().getItem().getValue("Nutr_Val"));
 
 			// if (!list.isEmpty()) {
 			// NutrientList nutrients = list.getHead().getItem().getNutrients();
@@ -61,13 +64,13 @@ class DatabaseTest {
 			// }
 			// }
 
-			if (!list.isEmpty()) {
-				ListNode<FoodPacket> temp = list.getHead();
-				while (temp != null) {
-					System.out.println(Arrays.toString(temp.getItem().getWeightData().toArray()));
-					temp = temp.getNext();
-				}
-			}
+//			if (!list.isEmpty()) {
+//				ListNode<FoodPacket> temp = list.getHead();
+//				while (temp != null) {
+//					System.out.println(Arrays.toString(temp.getItem().getWeightData().toArray()));
+//					temp = temp.getNext();
+//				}
+//			}
 		}
 	}
 }

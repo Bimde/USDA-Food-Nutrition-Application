@@ -200,6 +200,12 @@ class Parser {
 		return langualDescriptions;
 	}
 
+	/**
+	 * ***ONLY loads data from 'WEIGHT.txt'*** Specific loading method for the weight info for each 
+	 * @param file
+	 * @param main
+	 * @throws Exception
+	 */
 	public void parseWeightData(File file, FoodPacketBinaryTree main) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();

@@ -9,8 +9,15 @@ package database.datastrucutres;
  */
 public class FoodPacketList extends LinkedList<FoodPacket> {
 
+	/**
+	 * Flag to be used in the 'toStringArray()' method if user wants all the
+	 * results
+	 */
 	public static final int ALL_RESULTS = -1;
 
+	/**
+	 * Creates a new LinkedList of type FoodPacket
+	 */
 	public FoodPacketList() {
 		super();
 	}

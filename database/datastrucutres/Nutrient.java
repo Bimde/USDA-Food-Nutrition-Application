@@ -1,5 +1,7 @@
 package database.datastrucutres;
 
+import java.util.Arrays;
+
 /**
  * Data storage class to store nutrient information for individual foods in most
  * efficient way
@@ -43,9 +45,10 @@ public class Nutrient implements Comparable<Nutrient> {
 	 */
 	public String getValue(String header) {
 		for (int i = 0; i < this.data.length; i++) {
-			if (FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA][i]
-					.equals(header))
-				return this.data[i];
+			if (FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA][i].equals(header)) {
+				System.out.println("Hi" + Arrays.toString(data));
+				return this.data[i-1];
+			}
 		}
 		return "";
 	}
