@@ -54,8 +54,7 @@ public class IndependantSearchable extends Searchable {
 	}
 
 	/**
-	 * Compares the header value instead of the getting the header using the
-	 * reference
+	 * Returns the 'String'.compareTo() value of the two (string) headers
 	 */
 	@Override
 	public int compareTo(Searchable other) {

@@ -128,9 +128,22 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 	 *         NOT FOUND
 	 */
 	public FoodPacket get(String key) {
+		return this.get(key, "NDB_No");
+	}
+
+	/**
+	 * 
+	 * @param key
+	 *            The key (as a string) that the desired FoodPacet is associated
+	 *            with (this is the primary key from the 'FOOD_DES.txt' file)
+	 *   
+	 * @return The FoodPacket object associated with the given key or NULL IF
+	 *         NOT FOUND
+	 */
+	public FoodPacket get(String key, String field) {
 		ListNode<FoodPacket> temp = this.head;
 		while (temp != null) {
-			if (temp.getItem().getValue("NDB_No").equals(key))
+			if (temp.getItem().getValue(field).equals(key))
 				return temp.getItem();
 			temp = temp.getNext();
 		}
@@ -215,12 +228,16 @@ public class FoodPacketList extends LinkedList<FoodPacket> {
 	 */
 	public String[] toStringArray(String field, int maxResults) {
 		int size = this.getSize();
+
+		// Set the size of the array to the maximum number of results if the
+		// specified number is greater than 0 abd
 		if (maxResults >= 0)
 			size = Math.min(maxResults, size);
 		String[] array = new String[size];
 		ListNode<FoodPacket> temp = this.head;
 		int i = 0;
 		while (i < size) {
+			// Add the value inside the specified field into the array
 			array[i] = temp.getItem().getValue(field);
 			i++;
 			temp = temp.getNext();

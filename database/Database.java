@@ -23,18 +23,6 @@ import database.datastrucutres.Searchable;
 public class Database {
 
 	/**
-	 * Represents index in array of generalized food groups
-	 */
-	public static final int GRAINS = 0, MEAT = 1, VEGETABLES = 2, DAIRY = 3, OTHER = 4;
-
-	/**
-	 * Generalized food group categories
-	 */
-	public static final String[][] FOOD_GROUPS = { { "0800", "2000" },
-			{ "0500", "0700", "1000", "1200", "1300", "1500", "1700" }, { "0900", "1100", "1600" }, { "0100" },
-			{ "0200", "0300", "0400", "0600", "1400", "1800", "1900", "2100", "2200", "2500", "3500", "3600" } };
-
-	/**
 	 * Array of data used for the food description when adding foods to the
 	 * Database (Order of the variables in the 'addFood()' method)
 	 */
@@ -218,8 +206,11 @@ public class Database {
 	 *         not loaded
 	 */
 	public FoodPacketList search(String query) {
+		query = query.trim();
+		if (query.equals(""))
+			return new FoodPacketList();
 		if (this.isLoaded()) {
-			return this.main.search(query.replaceAll("^[,\\s]+", "").split("[,\\s]+"),
+			return this.search(query.replaceAll("^[,\\s]+", "").split("[,\\s]+"),
 					new String[] { "Long_Desc", "Short_Desc", "ComName", "NDB_No" }, true);
 		}
 		return null;
@@ -239,8 +230,11 @@ public class Database {
 	 *         not loaded
 	 */
 	public FoodPacketList search(String query, String header) {
+		query = query.trim();
+		if (query.equals(""))
+			return new FoodPacketList();
 		if (this.isLoaded()) {
-			return this.main.search(query.replaceAll("^[,\\s]+", "").split("[,\\s]+"), new String[] { header }, false);
+			return this.search(query.replaceAll("^[,\\s]+", "").split("[,\\s]+"), new String[] { header }, false);
 		}
 		return null;
 	}
@@ -417,7 +411,7 @@ public class Database {
 	 *            nutrient in 100g of the food item
 	 */
 	public void addFood(String foodGroupCode, String description, String commonName, String manufacturerName,
-			String[][] nutrientInfo) {
+			String scientificName, String[][] nutrientInfo) {
 		if (this.isLoaded()) {
 			// Capitalize first letter of description to stay consistent with
 			// format
@@ -429,8 +423,9 @@ public class Database {
 					// description as it is
 				}
 			}
-			String[] foodDescription = { (this.main.getLargestKey() + 1) + "", foodGroupCode, description, "",
-					commonName, manufacturerName, "", "", "", "", "", "", "", "11/2015" };
+			String[] foodDescription = { (this.main.getLargestKey() + 1) + "", foodGroupCode, description,
+					description.substring(0, 60), commonName, manufacturerName, "", "", "", scientificName, "", "", "",
+					"11/2015" };
 			FoodPacket item = new FoodPacket(foodDescription, FoodPacketBinaryTree.FOOD_DES);
 			this.main.add(item);
 

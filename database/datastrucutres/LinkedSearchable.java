@@ -70,7 +70,7 @@ public class LinkedSearchable extends Searchable {
 	}
 
 	/**
-	 * Returns the compareTo() value of the two (string) headers
+	 * Returns the 'String'.compareTo() value of the two (string) headers
 	 */
 	@Override
 	public int compareTo(Searchable other) {

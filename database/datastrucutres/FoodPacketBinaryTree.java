@@ -110,7 +110,8 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 	}
 
 	/**
-	 * Returns a FoodPacketList for added capabilities
+	 * Returns a FoodPacketList instead of a linked list of type FoodPacket for
+	 * added capabilities (i.e searching by primary key)
 	 */
 	@Override
 	public FoodPacketList toLinkedList() {
@@ -119,6 +120,10 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 		return list;
 	}
 
+	/**
+	 * Finds largest primary key in tree
+	 * @return Largest primary key in tree
+	 */
 	public int getLargestKey() {
 		Node<FoodPacket> temp = this.head;
 		while (temp.getLeftChild() != null) {

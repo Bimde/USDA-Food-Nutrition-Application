@@ -82,13 +82,13 @@ public class LinkedList<T> {
 	/**
 	 * Creates a new array of all of the objects
 	 * 
-	 * @return array of objects or NULL IF TMPTY
+	 * @return array of type T or NULL IF TMPTY
 	 */
 	public T[] toArray() {
 		if (this.isEmpty())
 			return null;
 
-		// Creates an array of type 'T' using casting technique
+		// Generates an array of type 'T'
 		@SuppressWarnings("unchecked")
 		T[] items = internalToArray((Class<T>) this.getHead().getItem().getClass());
 
@@ -101,11 +101,25 @@ public class LinkedList<T> {
 		return items;
 	}
 
+	/**
+	 * Creates an array of type T and of the same length as size of using a
+	 * specified class
+	 * 
+	 * @param clazz
+	 *            Class to use for 'Array.newInstance()' method
+	 * @return Empty array of type T and
+	 */
 	@SuppressWarnings("unchecked")
 	private T[] internalToArray(Class<T> clazz) {
 		return (T[]) Array.newInstance(clazz, this.getSize());
 	}
 
+	/**
+	 * Combines specified list with current list
+	 * 
+	 * @param list
+	 *            linked list to combine with current list
+	 */
 	public void merge(LinkedList<T> list) {
 		this.end.setNext(list.getHead());
 		this.size += list.getSize();
@@ -121,6 +135,7 @@ public class LinkedList<T> {
 			System.out.println(temp.getItem());
 			temp = temp.getNext();
 		}
+
 	}
 
 	/**

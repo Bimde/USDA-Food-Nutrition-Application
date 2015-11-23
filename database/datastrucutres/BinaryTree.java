@@ -10,8 +10,15 @@ package database.datastrucutres;
  *            Object which extends Comparable class for Nodes to hold
  */
 public class BinaryTree<T extends Comparable<T>> {
+
+	/**
+	 * The first node of the tree
+	 */
 	protected Node<T> head;
 
+	/**
+	 * Creates an empty, new binary tree of type T
+	 */
 	public BinaryTree() {
 	}
 
@@ -33,7 +40,7 @@ public class BinaryTree<T extends Comparable<T>> {
 	 * RETURNS NULL IF LIST IS EMPTY Returns the item contained in the head of
 	 * the tree
 	 * 
-	 * @return
+	 * @return Item contained inside head of tree or NULL IF TREE IS EMPTY
 	 */
 	public T getHead() {
 		if (this.head == null)
@@ -42,9 +49,13 @@ public class BinaryTree<T extends Comparable<T>> {
 	}
 
 	/**
+	 * Gets the node in the tree containing item with the same primary key as
+	 * the provided item
 	 * 
 	 * @param item
-	 * @return
+	 *            The item containing the primary key to search for
+	 * @return The item from the tree containing the same primary key as the
+	 *         specified item or NULL IF NOT FOUND
 	 */
 	public T get(T item) {
 		Node<T> temp = this.getNode(item);
@@ -77,7 +88,7 @@ public class BinaryTree<T extends Comparable<T>> {
 	 * 
 	 * @param item
 	 *            The item to find
-	 * @return whether the tree contains the specified item
+	 * @return Whether or not the tree contains the specified item
 	 */
 	public boolean contains(T item) {
 		if (this.getNode(item) == null)
@@ -88,7 +99,7 @@ public class BinaryTree<T extends Comparable<T>> {
 	/**
 	 * Find the max depth of the tree (how many nodes down the tree goes)
 	 * 
-	 * @return the max depth of the tree
+	 * @return Max depth of the tree
 	 */
 	protected int maxDepth() {
 		return this.internalMaxDepth(this.head);
@@ -114,17 +125,21 @@ public class BinaryTree<T extends Comparable<T>> {
 	protected int internalMaxDepth(Node<T> node) {
 		if (node == null)
 			return -1;
+
+		// If either of the node's branches don't exist, don't compare the
+		// depths of the two branches
 		if (node.isLeaf())
 			return node.getDepth();
-		else if (node.getLeftChild() == null)
+		if (node.getLeftChild() == null)
 			return internalMaxDepth(node.getRightChild());
-		else if (node.getRightChild() == null)
+		if (node.getRightChild() == null)
 			return internalMaxDepth(node.getLeftChild());
-		else {
-			int depth1 = internalMaxDepth(node.getLeftChild());
-			int depth2 = internalMaxDepth(node.getRightChild());
-			return depth1 >= depth2 ? depth1 : depth2;
-		}
+
+		// Return the maximum depth of either of the node's branches
+		int depth1 = internalMaxDepth(node.getLeftChild());
+		int depth2 = internalMaxDepth(node.getRightChild());
+		return depth1 >= depth2 ? depth1 : depth2;
+
 	}
 
 	/**
@@ -336,9 +351,9 @@ public class BinaryTree<T extends Comparable<T>> {
 	 *            The node to update the heights from
 	 */
 	protected void updateHeights(Node<T> node) {
-		// Call the updateHeight() method of leaves (nodes with no children)
-		// only as the method updates
-		// the height of all of the nodes above it recursively
+		// Call the 'updateHeight()' method on leaves (nodes with no children)
+		// only as the 'updateHeight()' method updates the height of all of the
+		// nodes above it recursively
 		if (node.getLeftChild() == null) {
 			if (node.getRightChild() == null)
 				node.updateHeight();
@@ -365,8 +380,11 @@ public class BinaryTree<T extends Comparable<T>> {
 		if (this.head == root)
 			this.setHead(pivot);
 
+		// Rotate the root away from the pivot
 		root.setLeft(pivot.getRightChild());
 		pivot.setRight(root);
+
+		// Change the child of the root's parent to the pivot node
 		if (parent != null) {
 			if (parent.getLeftChild() == root)
 				parent.setLeft(pivot);
@@ -388,8 +406,11 @@ public class BinaryTree<T extends Comparable<T>> {
 		if (this.head == root)
 			this.setHead(pivot);
 
+		// Rotate the root away from the pivot
 		root.setRight(pivot.getLeftChild());
 		pivot.setLeft(root);
+
+		// Change the child of the root's parent to the pivot node
 		if (parent != null) {
 			if (parent.getLeftChild() == root)
 				parent.setLeft(pivot);

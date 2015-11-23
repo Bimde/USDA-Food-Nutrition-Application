@@ -143,7 +143,7 @@ public class FoodPacket implements Comparable<FoodPacket> {
 	 */
 	@Override
 	public String toString() {
-		return this.key + " " + this.getValue("Long_Desc");
+		return this.key + "";
 	}
 
 	/**
@@ -203,16 +203,22 @@ public class FoodPacket implements Comparable<FoodPacket> {
 		return this.languals.toArray();
 	}
 
+	/**
+	 * Associates the specified linked list to this FoodPacket object
+	 * 
+	 * @param weightData
+	 */
 	public void addWeightData(SearchableLinkedList weightData) {
 		this.weightData = weightData;
 	}
 
+	/**
+	 * Getter for the associated linked list of weight-related information
+	 * 
+	 * @return Associated linked list of weight information or NULL if no
+	 *         associated weight information exists
+	 */
 	public SearchableLinkedList getWeightData() {
-		// if (this.weightData == null) {
-		// return new SearchableLinkedList().add(new Searchable());// base
-		// // measurement
-		// // for item
-		// }
 		return this.weightData;
 	}
 }

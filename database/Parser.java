@@ -51,8 +51,8 @@ class Parser {
 	}
 
 	/**
-	 * **General parsing method for majority of files Inputs data from specified
-	 * text file into FoodPacketBinaryTree
+	 * General parsing method for majority of files.<br>
+	 * Inputs data from specified text file into FoodPacketBinaryTree
 	 * 
 	 * @param file
 	 *            The file to load data from
@@ -83,10 +83,11 @@ class Parser {
 	}
 
 	/**
-	 * ***ONLY loads data from 'NUT_DATA.txt'*** Specific loading method for
+	 * ***ONLY loads data for 'NUT_DATA.txt'*** Specific loading method for
 	 * loading nutrient information into already existing BinaryTree
 	 * 
 	 * @param file
+	 *            File to read nutrient information from
 	 * 
 	 * @param main
 	 *            The BinaryTree to load information into
@@ -126,10 +127,11 @@ class Parser {
 	}
 
 	/**
-	 * ***ONLY loads data from 'FOOTNOTE.txt'*** Specific loading method for
+	 * ***ONLY loads data for 'FOOTNOTE.txt'*** Specific loading method for
 	 * loading footnote information into already existing BinaryTree
 	 * 
 	 * @param file
+	 *            File to read footnote information from
 	 * 
 	 * @param main
 	 *            The BinaryTree to load information into
@@ -154,13 +156,14 @@ class Parser {
 	}
 
 	/**
-	 * ***ONLY loads data from 'LANGUAL.txt' and 'LANGDESC.txt'*** Specific
+	 * ***ONLY loads data for 'LANGUAL.txt' and 'LANGDESC.txt'*** Specific
 	 * loading method for loading langual references into already existing
 	 * BinaryTree and langual descriptions into new BinaryTree
 	 * 
-	 * @param file1
-	 * @param file
-	 * 
+	 * @param langual
+	 *            File to read langual references from
+	 * @param langDesc
+	 *            File to read langual descriptions from
 	 * @param main
 	 *            The BinaryTree to load information into
 	 * @return BinaryTree containing langual descriptions (which could be
@@ -201,18 +204,30 @@ class Parser {
 	}
 
 	/**
-	 * ***ONLY loads data from 'WEIGHT.txt'*** Specific loading method for the weight info for each 
+	 * ***ONLY loads data for 'WEIGHT.txt'*** Specific loading method for weight
+	 * information into already existing BinaryTree of FoodPacket objects
+	 * 
 	 * @param file
+	 *            File to read data from
 	 * @param main
+	 *            FoodPacketBinaryTree to add weight information to
 	 * @throws Exception
+	 *             If file is not found, or any error occurs when loading data
+	 *             into BinaryTree
 	 */
 	public void parseWeightData(File file, FoodPacketBinaryTree main) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		String line = in.readLine();
 		while (line != null) {
 			String[] values = split(line, FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.WEIGHT].length);
+
+			// Set the key equal to the primary key of the 'WEIGHT.txt' file:
 			int key = Integer.parseInt(values[0]);
 			SearchableLinkedList weightData = new SearchableLinkedList();
+
+			// Add weight data associated with the same food item to the same
+			// LinkedList prior to adding list to FoodPacket in order to reduce
+			// number of BinaryTree accesses
 			while (line != null && Integer.parseInt(values[0]) == key) {
 				weightData.add(new IndependantSearchable(values[3],
 						Math.round((Double.parseDouble(values[4]) / Double.parseDouble(values[2])) * 10) / 10.0 + ""));

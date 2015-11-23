@@ -25,6 +25,9 @@ public abstract class Searchable implements Comparable<Searchable> {
 	 */
 	abstract public String getHeader();
 
+	/**
+	 * Compares two Searchable objects using their header values
+	 */
 	@Override
 	abstract public int compareTo(Searchable other);
 
@@ -47,6 +50,10 @@ public abstract class Searchable implements Comparable<Searchable> {
 		this.value = value;
 	}
 
+	/**
+	 * Returns the header with the associated value using the format:
+	 * "'Header' : 'Value'"
+	 */
 	@Override
 	public String toString() {
 		return this.getHeader() + " : " + this.value;
