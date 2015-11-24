@@ -143,7 +143,7 @@ public class FoodPacket implements Comparable<FoodPacket> {
 	 */
 	@Override
 	public String toString() {
-		return this.key + "";
+		return this.key + " "  + this.getValue("Long_Desc") + " Hi";
 	}
 
 	/**

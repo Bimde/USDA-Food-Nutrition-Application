@@ -89,7 +89,6 @@ public class Database {
 	 * Initializes and loads data into all data structures
 	 */
 	public Database() {
-		long time = System.currentTimeMillis();
 		this.bytesLoaded = 0;
 
 		// Set the files to be loaded equal to the number of files
@@ -188,8 +187,6 @@ public class Database {
 				}
 				// Set the loading status of 'FOOTNOTE.txt'to true
 				Database.this.setFileLoaded(FoodPacketBinaryTree.FOOTNOTE);
-
-				System.err.println("Time taken: " + (System.currentTimeMillis() - time) / 1000.0);
 			}
 		}.start();
 	}
@@ -423,9 +420,11 @@ public class Database {
 					// description as it is
 				}
 			}
+			// Use the first 60 characters of the long description as the short
+			// description (because it is mandatory in the file)
 			String[] foodDescription = { (this.main.getLargestKey() + 1) + "", foodGroupCode, description,
-					description.substring(0, 60), commonName, manufacturerName, "", "", "", scientificName, "", "", "",
-					"11/2015" };
+					description.length() <= 60 ? description.toUpperCase() : description.substring(0, 60).toUpperCase(),
+					commonName, manufacturerName, "", "", "", scientificName, "", "", "", "11/2015" };
 			FoodPacket item = new FoodPacket(foodDescription, FoodPacketBinaryTree.FOOD_DES);
 			this.main.add(item);
 

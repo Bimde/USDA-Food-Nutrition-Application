@@ -28,6 +28,16 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 			{ "Nutr_No", "Units", "Tagname", "NutrDesc", "Num_Dec", "SR_Order" }, { "FdGrp_Cd", "FdGrp_Desc" },
 			{ "Factor_Code", "Description" }, { "NDB_No", "Factor_Code" },
 			{ "NDB_No", "Footnt_No", "Footnt_Typ", "Nutr_No", "Footnt_Txt" } };
+	
+	/**
+	 * Specifies fields used in database program to reduce RAM usage
+	 */
+	public static final boolean[][] FIELDS_TO_LOAD = {
+			{ true, true, true, true, true, true, false, false, false, true, false, false, false, false },
+			{ true, true, true, false, false, false, false, false, false, false, false, false, false, false, false,
+					false, false, false },
+			{ true, true, true, true, true, false, false }, { true, true, true, true, false, false }, { true, true },
+			{ true, true }, { true, true }, { true, true, false, false, true } };
 
 	/**
 	 * Value representing specific files for accessing the HEADERS array
@@ -49,11 +59,6 @@ public class FoodPacketBinaryTree extends BinaryTree<FoodPacket> {
 	 * each match as opposed to only 1 point for each langual description match
 	 */
 	private static final int DESCRIPTIONS_WEIGHT = 5, LANGUAL_WEIGHT = 1;
-
-	// 0 1 2 3 4 5 6 7 8 9 10 11 12 13
-	// CHO_Factor, ComName, Fat_Factor, FdGrp_Cd, Long_Desc, ManufacName,
-	// NDB_No, N_Factor, Pro_Factor, Ref_desc, Refuse, SciName, Short_Desc,
-	// Survey
 
 	public FoodPacketBinaryTree() {
 		super();

@@ -1,7 +1,5 @@
 package database.datastrucutres;
 
-import java.util.Arrays;
-
 /**
  * Data storage class to store nutrient information for individual foods in most
  * efficient way
@@ -12,11 +10,7 @@ import java.util.Arrays;
  */
 public class Nutrient implements Comparable<Nutrient> {
 
-	/**
-	 * Array of data with indices associated with the headers at the same
-	 * indices
-	 */
-	private String[] data;
+	private SearchableLinkedList values = new SearchableLinkedList();
 
 	/**
 	 * Primary key from the 'NUTR_DEF.txt' file
@@ -29,8 +23,26 @@ public class Nutrient implements Comparable<Nutrient> {
 	 * @param nutrients
 	 */
 	public Nutrient(String[] nutrients) {
-		this.data = nutrients;
-		this.key = Integer.parseInt(this.data[0]);
+		this.key = Integer.parseInt(nutrients[0]);
+		this.addData(nutrients);
+	}
+
+	/**
+	 * Adds the provided data (in the form of the a string array) into this
+	 * object as a LinkedList
+	 * 
+	 * @param data
+	 *            The string array of data being added into the Linked List
+	 */
+	private void addData(String[] data) {
+		this.values = new SearchableLinkedList();
+		for (int i = 0; i < data.length; i++) {
+			// Use 'i + 1' for links to 'FoodPacketBinaryTree' because the first
+			// field 'NDB_NO' has been omitted from the passed in array
+			// parameter to save memory space
+			if (FoodPacketBinaryTree.FIELDS_TO_LOAD[FoodPacketBinaryTree.NUT_DATA][i + 1])
+				this.values.add(new LinkedSearchable(i + 1, data[i], FoodPacketBinaryTree.NUT_DATA));
+		}
 	}
 
 	/**
@@ -44,13 +56,7 @@ public class Nutrient implements Comparable<Nutrient> {
 	 *         STRING if not found
 	 */
 	public String getValue(String header) {
-		for (int i = 0; i < this.data.length; i++) {
-			if (FoodPacketBinaryTree.HEADERS[FoodPacketBinaryTree.NUT_DATA][i].equals(header)) {
-				System.out.println("Hi" + Arrays.toString(data));
-				return this.data[i-1];
-			}
-		}
-		return "";
+		return this.values.get(header);
 	}
 
 	/**
